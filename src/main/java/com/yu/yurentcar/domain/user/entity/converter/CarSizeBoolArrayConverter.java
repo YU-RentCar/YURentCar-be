@@ -1,5 +1,6 @@
-package com.yu.yurentcar.domain.user.entity;
+package com.yu.yurentcar.domain.user.entity.converter;
 
+import com.yu.yurentcar.domain.user.entity.CarSize;
 import com.yu.yurentcar.utils.enums.converter.AbstractEnumSetBoolAttributeConverter;
 import jakarta.persistence.Converter;
 
