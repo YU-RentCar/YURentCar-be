@@ -1,5 +1,7 @@
-package com.yu.yurentcar.domain.user.entity;
+package com.yu.yurentcar.domain.user.entity.converter;
 
+import com.yu.yurentcar.domain.user.entity.Transmission;
+import com.yu.yurentcar.domain.user.entity.TransmissionBitmap;
 import com.yu.yurentcar.utils.enums.EnumBitmapValue;
 import com.yu.yurentcar.utils.enums.EnumValueConvertUtils;
 import com.yu.yurentcar.utils.enums.converter.AbstractEnumSetToBitmapAttributeConverter;

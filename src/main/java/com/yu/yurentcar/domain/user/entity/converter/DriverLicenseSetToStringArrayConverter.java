@@ -1,5 +1,6 @@
-package com.yu.yurentcar.domain.user.entity;
+package com.yu.yurentcar.domain.user.entity.converter;
 
+import com.yu.yurentcar.domain.user.entity.DriverLicense;
 import com.yu.yurentcar.utils.enums.converter.AbstractEnumSetStringAttributeConverter;
 import jakarta.persistence.Converter;
 
