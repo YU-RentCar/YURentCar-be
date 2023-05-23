@@ -6,7 +6,7 @@ import jakarta.persistence.Converter;
 
 @Converter
 public class CarSizeBoolArrayConverter extends AbstractEnumSetBoolAttributeConverter<CarSize, Integer> {
-    public static final String ENUM_NAME = "차량음크기";
+    public static final String ENUM_NAME = "차량크기";
 
     public CarSizeBoolArrayConverter() {
         super(CarSize.class, false, ENUM_NAME);
