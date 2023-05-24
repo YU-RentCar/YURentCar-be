@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.reservation.entity;
 
+import com.yu.yurentcar.BaseTimeEntity;
 import com.yu.yurentcar.domain.user.entity.Admin;
 import com.yu.yurentcar.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "point")
-public class Point {
+public class Point extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "point_id")
@@ -32,10 +33,6 @@ public class Point {
     @NotNull
     @Column(length = 10)
     private String type;
-
-    @NotNull
-    @Column(name = "accumulation_date")//적립일
-    private LocalDateTime accumulationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
