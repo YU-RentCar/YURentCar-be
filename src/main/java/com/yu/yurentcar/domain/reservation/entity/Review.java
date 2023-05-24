@@ -1,21 +1,19 @@
 package com.yu.yurentcar.domain.reservation.entity;
 
 
-import com.yu.yurentcar.domain.user.entity.User;
+import com.yu.yurentcar.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "review")
-public class Review {
+public class Review extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
@@ -24,14 +22,11 @@ public class Review {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
-    private User reservationId;
+    private Reservation reservation;
 
     @NotNull
     @Column
     private String description;
 
-    @NotNull
-    @Column(name = "issue_date")
-    private LocalDateTime issueDate;
 }
 
