@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.branch.entity;
 
+import com.yu.yurentcar.BaseTimeEntity;
 import com.yu.yurentcar.domain.car.entity.Car;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "parking_spot")
-public class ParkingSpot {
+public class ParkingSpot extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "parking_spot_id")
