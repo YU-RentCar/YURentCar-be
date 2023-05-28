@@ -1,6 +1,7 @@
 package com.yu.yurentcar.domain.insurance.entity;
 
 
+import com.yu.yurentcar.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "insurance_company")
-public class InsuranceCompany {
+public class InsuranceCompany extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_id")
@@ -23,10 +24,10 @@ public class InsuranceCompany {
     private String companyName;
 
     @NotNull
-    @Column(name = "company_telephone_number",length = 15)
-    private String companyTelephoneNumber;
+    @Column(name = "phone_number",length = 15)
+    private String phoneNumber;
 
     @NotNull
-    @Column(name = "company_site_link",length = 100)
-    private String companySiteLink;
+    @Column(name = "site_link",length = 100)
+    private String siteLink;
 }
