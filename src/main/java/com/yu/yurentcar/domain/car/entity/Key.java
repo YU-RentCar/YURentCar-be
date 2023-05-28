@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.car.entity;
 
+import com.yu.yurentcar.BaseTimeEntity;
 import com.yu.yurentcar.domain.branch.entity.KeyStorage;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "key")
-public class Key {
+public class Key extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "key_id")
@@ -30,8 +31,8 @@ public class Key {
     @Column(name = "rfid", length = 30)
     private String rfid;
 
-    //TODO : enum
+    @Enumerated(EnumType.STRING)
     @NotNull
     @Column(name = "state", length = 30)
-    private String state;
+    private KeyState state;
 }

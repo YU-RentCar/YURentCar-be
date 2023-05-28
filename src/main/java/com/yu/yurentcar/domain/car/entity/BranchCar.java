@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.car.entity;
 
+import com.yu.yurentcar.BaseTimeEntity;
 import com.yu.yurentcar.domain.branch.entity.Branch;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "branch_car")
-public class BranchCar {
+public class BranchCar extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "owned_id")
