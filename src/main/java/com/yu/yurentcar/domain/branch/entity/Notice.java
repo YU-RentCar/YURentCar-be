@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -33,7 +32,7 @@ public class Notice {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
-    private Admin adminId;
+    private Admin admin;
 
     @NotNull
     @Column(name = "title", length = 100)
@@ -46,7 +45,6 @@ public class Notice {
     @Column(name = "photo_url", length = 200)
     private String photoUrl;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "finish_date")
     private LocalDateTime finishDate;
 }

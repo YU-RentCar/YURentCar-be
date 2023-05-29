@@ -1,6 +1,7 @@
 package com.yu.yurentcar.domain.insurance.entity;
 
 
+import com.yu.yurentcar.BaseTimeEntity;
 import com.yu.yurentcar.domain.reservation.entity.Reservation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "insurance_contract")
-public class InsuranceContract {
+public class InsuranceContract extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contract_id")
@@ -24,12 +25,12 @@ public class InsuranceContract {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "insurance_company_id")
-    private Reservation insuranceCompanyId;
+    private InsuranceCompany insuranceCompany;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
-    private Reservation reservationId;
+    private Reservation reservation;
 
     @NotNull
     @Column(name = "contraction_price")

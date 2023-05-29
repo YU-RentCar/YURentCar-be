@@ -1,11 +1,16 @@
 package com.yu.yurentcar.domain.car.entity;
 
+import com.yu.yurentcar.BaseTimeEntity;
+import com.yu.yurentcar.domain.car.entity.converter.TransmissionToBoolAttributeConverter;
+import com.yu.yurentcar.domain.user.entity.CarSize;
+import com.yu.yurentcar.domain.user.entity.OilType;
+import com.yu.yurentcar.domain.user.entity.Transmission;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "car_specification")
-public class CarSpecification {
+public class CarSpecification extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "car_spec_id")
@@ -28,31 +33,32 @@ public class CarSpecification {
     @Column(name = "max_passenger")
     private Integer maxPassenger;
 
-    //TODO : enum
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "car_size", length = 30)
-    private String carSize;
-
-    //TODO : enum
-    @NotNull
-    @Column(name = "type_of_oil", length = 30)
-    private String typeOfOil;
+    private CarSize carSize;
 
     @NotNull
-    @Column(name = "is_auto")
-    private Boolean isAuto;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "oil_type", length = 30)
+    private OilType oilType;
+
+    @NotNull
+    @Convert(converter = TransmissionToBoolAttributeConverter.class)
+    @Column(name = "is_auto_transmission", columnDefinition = "bool")
+    private Transmission transmission;
 
     @NotNull
     @Column(name = "is_korean")
-    private Boolean isKorean;
+    @Builder.Default
+    private Boolean isKorean = this.carBrand.getIsKorean();
 
-    //TODO : enum
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "car_brand", length = 30)
-    private String carBrand;
+    private CarBrand carBrand;
 
     @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "release_date")
     private LocalDateTime releaseDate;
 }
