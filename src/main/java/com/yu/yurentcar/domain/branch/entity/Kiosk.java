@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.branch.entity;
 
+import com.yu.yurentcar.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "kiosk")
-public class Kiosk {
+public class Kiosk extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "kiosk_id")
