@@ -31,8 +31,11 @@ public class OilTypeBitmap implements EnumBitmapValue<OilType, Integer> {
 
         OilTypeBitmap that = (OilTypeBitmap) o;
 
-        //EnumSet 의 equals 을 통해 비교 진행하도록 커스텀
-        return enumSet.equals(that.enumSet);
+        //EnumSet 의 equals 을 위해 모두 포함하고 있는지 검사
+        if(enumSet.size() != that.enumSet.size())
+            return false;
+
+        return that.enumSet.containsAll(enumSet);
     }
 
     @Override
