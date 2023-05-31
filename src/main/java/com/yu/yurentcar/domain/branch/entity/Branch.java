@@ -3,10 +3,7 @@ package com.yu.yurentcar.domain.branch.entity;
 import com.yu.yurentcar.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "branch")
+@ToString
 public class Branch extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +25,12 @@ public class Branch extends BaseTimeEntity {
     private String branchName;
 
     @NotNull
-    @Column(name = "branch_address")
-    private String branchAddress;
+    @Column(name = "address_latitude")
+    private Double latitude;
+
+    @NotNull
+    @Column(name = "address_longitude")
+    private Double longitude;
 
     @NotNull
     @Column(name = "si_do", length = 50)
