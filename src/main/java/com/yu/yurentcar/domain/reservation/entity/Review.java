@@ -25,6 +25,10 @@ public class Review extends BaseTimeEntity {
     private Reservation reservation;
 
     @NotNull
+    @Column(length = 100)
+    private String title;
+
+    @NotNull
     @Column
     private String description;
 

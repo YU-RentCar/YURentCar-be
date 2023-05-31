@@ -9,7 +9,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -37,8 +36,7 @@ public class User extends BaseTimeEntity {
     private String username;
 
     @NotNull
-    @Size(min = 256, max=256)
-    @Column(length = 256)
+    @Column(length = 100)
     private String password;
 
     @NotNull

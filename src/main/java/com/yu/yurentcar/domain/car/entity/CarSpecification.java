@@ -7,7 +7,6 @@ import com.yu.yurentcar.domain.user.entity.OilType;
 import com.yu.yurentcar.domain.user.entity.Transmission;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "car_specification")
 public class CarSpecification extends BaseTimeEntity {
     @Id
@@ -50,8 +48,7 @@ public class CarSpecification extends BaseTimeEntity {
 
     @NotNull
     @Column(name = "is_korean")
-    @Builder.Default
-    private Boolean isKorean = this.carBrand.getIsKorean();
+    private Boolean isKorean;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -61,4 +58,16 @@ public class CarSpecification extends BaseTimeEntity {
     @NotNull
     @Column(name = "release_date")
     private LocalDateTime releaseDate;
+
+    @Builder
+    public CarSpecification(String carName, Integer maxPassenger, CarSize carSize, OilType oilType, Transmission transmission, CarBrand carBrand, LocalDateTime releaseDate) {
+        this.carName = carName;
+        this.maxPassenger = maxPassenger;
+        this.carSize = carSize;
+        this.oilType = oilType;
+        this.transmission = transmission;
+        this.carBrand = carBrand;
+        this.isKorean = carBrand.getIsKorean();
+        this.releaseDate = releaseDate;
+    }
 }
