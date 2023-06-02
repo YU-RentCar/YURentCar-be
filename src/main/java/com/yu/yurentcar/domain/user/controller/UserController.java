@@ -1,6 +1,5 @@
 package com.yu.yurentcar.domain.user.controller;
 
-import com.yu.yurentcar.domain.reservation.dto.ReservationDto;
 import com.yu.yurentcar.domain.user.dto.ChangeNicknameDto;
 import com.yu.yurentcar.domain.user.dto.PreferFilterDto;
 import com.yu.yurentcar.domain.user.dto.UserProfileDto;
@@ -15,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 @RestController
 @RequestMapping("api/v1/users")
-public class AuthController {
+public class UserController {
     private final AuthService authService;
 
     @Autowired
-    public AuthController(AuthService authService) {
+    public UserController(AuthService authService) {
         this.authService = authService;
     }
 
