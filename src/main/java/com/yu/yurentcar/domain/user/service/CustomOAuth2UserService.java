@@ -1,9 +1,7 @@
 package com.yu.yurentcar.domain.user.service;
 
 import com.yu.yurentcar.domain.user.dto.UserAuthDto;
-import com.yu.yurentcar.domain.user.entity.Gender;
-import com.yu.yurentcar.domain.user.entity.JoinType;
-import com.yu.yurentcar.domain.user.entity.User;
+import com.yu.yurentcar.domain.user.entity.*;
 import com.yu.yurentcar.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,7 +51,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         JoinType joinType;
         LocalDateTime birthday;
         String phoneNumber;
-
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
@@ -92,7 +90,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .birthday(user.getBirthday())
                 .type(user.getJoinType())
                 .attributes(attributes)
-                .authorities(Arrays.asList(new SimpleGrantedAuthority("user")))
+                .authorities(Arrays.asList(new SimpleGrantedAuthority("USER_ROLE")))
                 .build();
 
 
@@ -113,6 +111,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .birthday(birthday)
                 .phoneNumber(phoneNumber)
                 .joinType(joinType)
+                .licenseEnumSet(EnumSet.noneOf(DriverLicense.class))
+                .preferSize(EnumSet.noneOf(CarSize.class))
+                .licenseEnumSet(EnumSet.noneOf(DriverLicense.class))
                 .build();
         userRepository.saveAndFlush(newUser);
 
