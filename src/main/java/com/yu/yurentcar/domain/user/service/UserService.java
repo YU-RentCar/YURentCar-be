@@ -9,15 +9,17 @@ import com.yu.yurentcar.domain.user.entity.Transmission;
 import com.yu.yurentcar.domain.user.entity.User;
 import com.yu.yurentcar.domain.user.repository.UserRepository;
 import com.yu.yurentcar.utils.enums.EnumValueConvertUtils;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Log4j2
 @Service
-public class AuthService {
+public class UserService {
     private final UserRepository userRepository;
 
-    public AuthService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
