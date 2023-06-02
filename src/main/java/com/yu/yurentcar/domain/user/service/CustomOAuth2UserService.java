@@ -87,6 +87,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .name(user.getName())
+                .nickname(user.getNickname())
                 .birthday(user.getBirthday())
                 .type(user.getJoinType())
                 .attributes(attributes)
