@@ -38,7 +38,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(authService.lookupPreferFilter(nickname));
     }
 
-    @PatchMapping(value = "/nicknames/change")
+    @PatchMapping(value = "/nicknames")
     public ResponseEntity<User> changeNickname(@RequestBody ChangeNicknameDto changeNicknameDto) {
         log.info("Username : " + changeNicknameDto.getUsername() + " nickname : " + changeNicknameDto.getNickname());
         return ResponseEntity.status(HttpStatus.OK).body(authService.changeNickname(changeNicknameDto));
