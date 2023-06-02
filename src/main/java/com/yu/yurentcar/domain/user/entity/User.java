@@ -1,7 +1,7 @@
 package com.yu.yurentcar.domain.user.entity;
 
 import com.yu.yurentcar.BaseTimeEntity;
-import com.yu.yurentcar.domain.user.dto.SignupRequestDto;
+import com.yu.yurentcar.domain.user.dto.PreferFilterDto;
 import com.yu.yurentcar.domain.user.entity.converter.CarSizeBoolArrayConverter;
 import com.yu.yurentcar.domain.user.entity.converter.DriverLicenseSetToStringArrayConverter;
 import com.yu.yurentcar.domain.user.entity.converter.OilTypeBitmapConverter;
@@ -17,7 +17,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 import java.util.EnumSet;
-import java.util.List;
 
 @Entity
 @Table(name = "USER_APP")
@@ -96,11 +95,11 @@ public class User extends BaseTimeEntity {
     @Column(name = "prefer_min_passenger")
     private Integer preferMinPassenger;
 
-    public User updatePrefer(SignupRequestDto signupRequestDto) {
-        this.preferSize = EnumValueConvertUtils.ofBoolListCode(CarSize.class, signupRequestDto.getCarSizes());
-        this.preferMinPassenger = signupRequestDto.getMinCount();
-        this.preferOilTypeSet = new OilTypeBitmap(EnumValueConvertUtils.ofBoolListCode(OilType.class, signupRequestDto.getOilTypes()));
-        this.preferTransmissionSet = new TransmissionBitmap(EnumValueConvertUtils.ofBoolListCode(Transmission.class, signupRequestDto.getTransmissions()));
+    public User updatePrefer(PreferFilterDto preferFilterDto) {
+        this.preferSize = EnumValueConvertUtils.ofBoolListCode(CarSize.class, preferFilterDto.getCarSizes());
+        this.preferMinPassenger = preferFilterDto.getMinCount();
+        this.preferOilTypeSet = new OilTypeBitmap(EnumValueConvertUtils.ofBoolListCode(OilType.class, preferFilterDto.getOilTypes()));
+        this.preferTransmissionSet = new TransmissionBitmap(EnumValueConvertUtils.ofBoolListCode(Transmission.class, preferFilterDto.getTransmissions()));
         return this;
     }
 }
