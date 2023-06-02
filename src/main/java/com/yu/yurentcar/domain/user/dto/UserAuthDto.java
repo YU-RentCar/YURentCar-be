@@ -19,17 +19,21 @@ import java.util.Map;
 public class UserAuthDto extends User implements OAuth2User {
     private final String username;
     private String name;
+    private String nickname;
     private LocalDateTime birthday;
+    private String phoneNumber;
     private final JoinType joinType;
     private Map<String, Object> attributes;
 
     @Builder(builderMethodName = "customBuilder")
-    public UserAuthDto(String username, String password, String name, LocalDateTime birthday,
-                       JoinType type,
+    public UserAuthDto(String username, String password, String name, String nickname,
+                       LocalDateTime birthday, String phoneNumber, JoinType type,
                        Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes) {
         this(username, password, type, authorities);
         this.name = name;
+        this.nickname = nickname;
         this.birthday = birthday;
+        this.phoneNumber = phoneNumber;
         this.attributes = attributes;
     }
 
