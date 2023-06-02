@@ -1,7 +1,9 @@
 package com.yu.yurentcar.domain.user.entity;
 
 import com.yu.yurentcar.BaseTimeEntity;
+import com.yu.yurentcar.domain.user.dto.ChangeNicknameDto;
 import com.yu.yurentcar.domain.user.dto.PreferFilterDto;
+import com.yu.yurentcar.domain.user.dto.UserProfileDto;
 import com.yu.yurentcar.domain.user.entity.converter.CarSizeBoolArrayConverter;
 import com.yu.yurentcar.domain.user.entity.converter.DriverLicenseSetToStringArrayConverter;
 import com.yu.yurentcar.domain.user.entity.converter.OilTypeBitmapConverter;
@@ -100,6 +102,19 @@ public class User extends BaseTimeEntity {
         this.preferMinPassenger = preferFilterDto.getMinCount();
         this.preferOilTypeSet = new OilTypeBitmap(EnumValueConvertUtils.ofBoolListCode(OilType.class, preferFilterDto.getOilTypes()));
         this.preferTransmissionSet = new TransmissionBitmap(EnumValueConvertUtils.ofBoolListCode(Transmission.class, preferFilterDto.getTransmissions()));
+        return this;
+    }
+
+    public User updateNickname(String nickname){
+        this.nickname = nickname;
+        return this;
+    }
+
+    public User updateProfile(UserProfileDto userProfileDto){
+        this.username = userProfileDto.getUsername();
+        this.name = userProfileDto.getName();
+        this.nickname = userProfileDto.getNickname();
+        this.phoneNumber = userProfileDto.getPhoneNumber();
         return this;
     }
 }
