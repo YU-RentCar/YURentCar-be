@@ -48,4 +48,11 @@ public class UserAuthDto extends User implements OAuth2User {
         return this.attributes;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
