@@ -1,9 +1,7 @@
 package com.yu.yurentcar.domain.user.entity;
 
 import com.yu.yurentcar.BaseTimeEntity;
-import com.yu.yurentcar.domain.user.dto.ChangeNicknameDto;
 import com.yu.yurentcar.domain.user.dto.PreferFilterDto;
-import com.yu.yurentcar.domain.user.dto.UserProfileDto;
 import com.yu.yurentcar.domain.user.entity.converter.CarSizeBoolArrayConverter;
 import com.yu.yurentcar.domain.user.entity.converter.DriverLicenseSetToStringArrayConverter;
 import com.yu.yurentcar.domain.user.entity.converter.OilTypeBitmapConverter;
@@ -13,23 +11,24 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 import java.util.EnumSet;
+import java.util.Objects;
 
 @Entity
-@Table(name = "USER_APP")
+@Table(name = "USER_APP", indexes = @Index(name = "idx_username", columnList = "username", unique = true))
 @Getter
 @DynamicUpdate
 @DynamicInsert
-@AllArgsConstructor//(access = AccessLevel.PRIVATE)
-@NoArgsConstructor
-@Builder
+@NoArgsConstructor//(access = AccessLevel.PRIVATE)
 @ToString
-@EqualsAndHashCode
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,8 +62,7 @@ public class User extends BaseTimeEntity {
 
     @NotNull
     @Column(name = "total_point", columnDefinition = "integer default 0")
-    @Builder.Default
-    private Integer totalPoint = 0;
+    private Integer totalPoint;
 
     @NotNull
     @Column(name = "join_type", length = 5)
@@ -97,24 +95,54 @@ public class User extends BaseTimeEntity {
     @Column(name = "prefer_min_passenger")
     private Integer preferMinPassenger;
 
+    @Builder
+    public User(String username, String password, String name, String nickname, LocalDateTime birthday, Gender gender, Integer totalPoint, JoinType joinType, String phoneNumber, EnumSet<DriverLicense> licenseEnumSet, EnumSet<CarSize> preferSize, OilTypeBitmap preferOilTypeSet, TransmissionBitmap preferTransmissionSet, Integer preferMinPassenger) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.nickname = nickname;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.totalPoint = Objects.requireNonNullElse(totalPoint, 0);
+        this.joinType = joinType;
+        this.phoneNumber = phoneNumber;
+        this.licenseEnumSet = licenseEnumSet;
+        this.preferSize = preferSize;
+        this.preferOilTypeSet = preferOilTypeSet;
+        this.preferTransmissionSet = preferTransmissionSet;
+        this.preferMinPassenger = preferMinPassenger;
+    }
+
     public User updatePrefer(PreferFilterDto preferFilterDto) {
-        this.preferSize = EnumValueConvertUtils.ofBoolListCode(CarSize.class, preferFilterDto.getCarSizes());
-        this.preferMinPassenger = preferFilterDto.getMinCount();
-        this.preferOilTypeSet = new OilTypeBitmap(EnumValueConvertUtils.ofBoolListCode(OilType.class, preferFilterDto.getOilTypes()));
-        this.preferTransmissionSet = new TransmissionBitmap(EnumValueConvertUtils.ofBoolListCode(Transmission.class, preferFilterDto.getTransmissions()));
+        if(preferSize != null)
+            this.preferSize = EnumValueConvertUtils.ofBoolListCode(CarSize.class, preferFilterDto.getCarSizes());
+        if(preferMinPassenger != null)
+            this.preferMinPassenger = preferFilterDto.getMinCount();
+        if(preferOilTypeSet != null)
+            this.preferOilTypeSet = new OilTypeBitmap(EnumValueConvertUtils.ofBoolListCode(OilType.class, preferFilterDto.getOilTypes()));
+        if(preferTransmissionSet != null)
+            this.preferTransmissionSet = new TransmissionBitmap(EnumValueConvertUtils.ofBoolListCode(Transmission.class, preferFilterDto.getTransmissions()));
         return this;
     }
 
     public User updateNickname(String nickname){
-        this.nickname = nickname;
+        if(username != null)
+            this.nickname = nickname;
         return this;
     }
 
+    // TODO : 추후 논의 후 추가
+    /*
     public User updateProfile(UserProfileDto userProfileDto){
-        this.username = userProfileDto.getUsername();
-        this.name = userProfileDto.getName();
-        this.nickname = userProfileDto.getNickname();
-        this.phoneNumber = userProfileDto.getPhoneNumber();
+        if(username != null)
+            this.username = userProfileDto.getUsername();
+        if(name != null)
+            this.name = userProfileDto.getName();
+        if(nickname != null)
+            this.nickname = userProfileDto.getNickname();
+        if(phoneNumber != null)
+            this.phoneNumber = userProfileDto.getPhoneNumber();
         return this;
     }
+     */
 }
