@@ -11,6 +11,7 @@ import com.yu.yurentcar.utils.TokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 
+@Log4j2
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -97,11 +99,10 @@ public class SecurityConfig {
                 .and()
                 .successHandler(userLoginSuccessHandler());
 
-        http.logout()
+        http.logout( logout -> logout
                 //.logoutSuccessHandler()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/api/v1/logout"))
                 .addLogoutHandler((request, response, authentication) -> {
-
                     Cookie refreshToken = new Cookie("refreshToken", null);
                     refreshToken.setPath("/");
                     refreshToken.setHttpOnly(true);
@@ -113,6 +114,9 @@ public class SecurityConfig {
                     accessToken.setMaxAge(0);
                     accessToken.setDomain(DOMAIN);
 
+                    response.addCookie(accessToken);
+                    response.addCookie(refreshToken);
+
                     /*
                     String tokenString = request.getHeader("Authorization");
                     try {
@@ -123,10 +127,10 @@ public class SecurityConfig {
                      */
                     SecurityContextHolder.clearContext();
                 })
-                .deleteCookies()
+                .deleteCookies("accessToken", "refreshToken")
                 .invalidateHttpSession(true)
-                .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK));
-
+                .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
+        );
 
 
         return http.build();
