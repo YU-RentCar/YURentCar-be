@@ -7,12 +7,10 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ChangeNicknameDto {
-    private String username;
     private String nickname;
 
     @Builder
-    public ChangeNicknameDto(String username, String nickname) {
-        this.username = username;
+    public ChangeNicknameDto(String nickname) {
         this.nickname = nickname;
     }
 }
