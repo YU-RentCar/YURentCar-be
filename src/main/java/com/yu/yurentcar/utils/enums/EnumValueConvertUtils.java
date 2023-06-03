@@ -76,6 +76,8 @@ public class EnumValueConvertUtils {
 
 
     public static <E extends Enum<E> & EnumValue<?>> Integer toBitCode(EnumSet<E> enumSet) {
+        if(enumSet == null || enumSet.size() == 0)
+            return 0;
         return enumSet.stream()
                 .mapToInt(v -> 1 << v.ordinal())
                 .sum();
