@@ -9,7 +9,7 @@ public class CarSizeBoolArrayConverter extends AbstractEnumSetBoolAttributeConve
     public static final String ENUM_NAME = "차량크기";
 
     public CarSizeBoolArrayConverter() {
-        super(CarSize.class, false, ENUM_NAME);
+        super(CarSize.class, true, ENUM_NAME);
     }
 
 }
