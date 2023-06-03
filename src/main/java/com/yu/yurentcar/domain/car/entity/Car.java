@@ -1,6 +1,7 @@
 package com.yu.yurentcar.domain.car.entity;
 
 import com.yu.yurentcar.BaseTimeEntity;
+import com.yu.yurentcar.domain.branch.entity.Branch;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,11 @@ public class Car extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_spec")
     private CarSpecification carSpec;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 
     @NotNull
     @Column(name = "car_number", length = 10)
