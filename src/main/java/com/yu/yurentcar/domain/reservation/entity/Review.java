@@ -4,15 +4,13 @@ package com.yu.yurentcar.domain.reservation.entity;
 import com.yu.yurentcar.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "review")
+@ToString
 public class Review extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +20,7 @@ public class Review extends BaseTimeEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
+    @ToString.Exclude
     private Reservation reservation;
 
     @NotNull
@@ -32,5 +31,15 @@ public class Review extends BaseTimeEntity {
     @Column
     private String description;
 
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
+
+    @Builder
+    public Review(@NotNull Reservation reservation, @NotNull String title, @NotNull String description) {
+        this.reservation = reservation;
+        this.title = title;
+        this.description = description;
+    }
 }
 

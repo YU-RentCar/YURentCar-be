@@ -131,6 +131,12 @@ public class User extends BaseTimeEntity {
         return this;
     }
 
+    public User updatePoint(Integer point) {
+        if(point != null)
+            this.totalPoint += point;
+        return this;
+    }
+
     // TODO : 추후 논의 후 추가
     /*
     public User updateProfile(UserProfileDto userProfileDto){
