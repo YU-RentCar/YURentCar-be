@@ -53,7 +53,7 @@ public class UserController {
 //        return ResponseEntity.status(HttpStatus.OK).body(userService.changeProfile(userProfileDto));
 //    }
 
-    @GetMapping(value = "/point")
+    @GetMapping(value = "/points")
     public ResponseEntity<Integer> getPoint(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth) {
         log.info("username : " + auth.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(userService.getPoint(auth.getUsername()));
