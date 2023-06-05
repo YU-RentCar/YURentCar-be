@@ -6,15 +6,16 @@ import com.yu.yurentcar.domain.user.entity.User;
 import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "reservation")
 @ToString
 public class Reservation extends BaseTimeEntity {
@@ -46,4 +47,13 @@ public class Reservation extends BaseTimeEntity {
     @NotNull
     @Column(name = "reservation_price")
     private Integer reservationPrice;
+
+    @Builder
+    public Reservation(Car car, User user, LocalDateTime startDate, LocalDateTime endDate, Integer reservationPrice) {
+        this.car = car;
+        this.user = user;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.reservationPrice = reservationPrice;
+    }
 }
