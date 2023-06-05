@@ -5,6 +5,7 @@ import com.yu.yurentcar.domain.reservation.dto.PointDto;
 import com.yu.yurentcar.domain.reservation.repository.PointRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,10 +14,12 @@ import java.util.List;
 public class PointService {
     private final PointRepository pointRepository;
 
+    @Transactional(readOnly = true)
     public List<PointDetailsResponseDto> getPointList(String username) {
         return pointRepository.findAllPointByUsername(username);
     }
 
+    @Transactional
     public void updatePoint(PointDto pointDto) {
         switch (pointDto.getType()) {
             case REVIEW -> {

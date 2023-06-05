@@ -5,6 +5,7 @@ import com.yu.yurentcar.global.SiDoType;
 import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class BranchService {
         this.branchRepository = branchRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<String> getBranchNameList(String siDoString) {
         SiDoType siDo;
         try {
