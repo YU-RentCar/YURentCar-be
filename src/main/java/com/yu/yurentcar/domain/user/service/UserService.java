@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.user.service;
 
+import com.yu.yurentcar.domain.user.dto.DriverLicenseResponseDto;
 import com.yu.yurentcar.domain.user.dto.PreferFilterDto;
 import com.yu.yurentcar.domain.user.dto.UserProfileDto;
 import com.yu.yurentcar.domain.user.entity.CarSize;
@@ -80,6 +81,15 @@ public class UserService {
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .phoneNumber(user.getPhoneNumber())
+                .build()).orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public DriverLicenseResponseDto getLicense(String username) {
+        Optional<User> lookupUser = userRepository.findByUsername(username);
+        if (lookupUser.isEmpty()) throw new RuntimeException("없는 유저 입니다.");
+        return lookupUser.map(user -> DriverLicenseResponseDto.builder()
+                .driverLicense(user.getLicenseEnumSet().iterator().next().getDbValue())
                 .build()).orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
     }
 }
