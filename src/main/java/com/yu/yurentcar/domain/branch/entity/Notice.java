@@ -45,16 +45,21 @@ public class Notice extends BaseTimeEntity {
     @Column(name = "photo_url", length = 200)
     private String photoUrl;
 
+    @Column(name = "start_date")
+    private LocalDateTime startDate;
+
     @Column(name = "finish_date")
     private LocalDateTime finishDate;
 
     @Builder
-    public Notice(@NotNull Branch branch, @NotNull Admin admin, @NotNull String title, @NotNull String description, String photoUrl, LocalDateTime finishDate) {
+    public Notice(Long noticeId, @NotNull Branch branch, @NotNull Admin admin, @NotNull String title, @NotNull String description, String photoUrl, LocalDateTime startDate, LocalDateTime finishDate) {
+        this.noticeId = noticeId;
         this.branch = branch;
         this.admin = admin;
         this.title = title;
         this.description = description;
         this.photoUrl = photoUrl;
+        this.startDate = startDate;
         this.finishDate = finishDate;
     }
 }

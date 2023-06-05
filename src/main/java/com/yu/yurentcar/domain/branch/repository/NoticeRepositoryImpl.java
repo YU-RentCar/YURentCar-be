@@ -16,7 +16,7 @@ import static com.yu.yurentcar.domain.branch.entity.QNotice.notice;
 @Log4j2
 @Repository
 @RequiredArgsConstructor
-public class NoticeRepositoryImpl implements NoticeRepositoryCustom{
+public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -28,11 +28,11 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom{
         //notice테이블을 지점id로 걸러냄
         //종료일이 현재보다 뒤인 경우 혹은 종료일이 없는 경우만 남겨냄
         return queryFactory
-                .select(Projections.constructor(NoticeResponseDto.class, notice.noticeId,notice.title,notice.finishDate,notice.createdAt,notice.modifiedAt))
+                .select(Projections.constructor(NoticeResponseDto.class, notice.noticeId, notice.title, notice.startDate, notice.finishDate, notice.createdAt, notice.modifiedAt))
                 .from(notice)
                 .where(notice.branch.eq(queryFactory
-                        .selectFrom(branch)
-                        .where(branch.branchName.eq(branchName).and(branch.siDo.eq(province))))
+                                .selectFrom(branch)
+                                .where(branch.branchName.eq(branchName).and(branch.siDo.eq(province))))
                         .and(notice.finishDate.gt(LocalDateTime.now()).or(notice.finishDate.isNull())))
                 .orderBy(notice.modifiedAt.desc())
                 .fetch();

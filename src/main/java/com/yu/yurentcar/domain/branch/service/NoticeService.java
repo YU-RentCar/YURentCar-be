@@ -26,6 +26,11 @@ public class NoticeService {
         Optional<Notice> notice = noticeRepository.findById(noticeId);
         if (notice.isEmpty()) throw new RuntimeException();
         return NoticeContentResponseDto.builder()
+                .title(notice.get().getTitle())
+                .startDate(notice.get().getStartDate())
+                .finishDate(notice.get().getFinishDate())
+                .createdAt(notice.get().getCreatedAt())
+                .modifiedAt(notice.get().getModifiedAt())
                 .photoUrl(notice.get().getPhotoUrl())
                 .description(notice.get().getDescription())
                 .build();
