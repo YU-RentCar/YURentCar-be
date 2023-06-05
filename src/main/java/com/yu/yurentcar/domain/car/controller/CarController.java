@@ -1,8 +1,6 @@
 package com.yu.yurentcar.domain.car.controller;
 
-import com.yu.yurentcar.domain.car.dto.CarDetailsResponseDto;
-import com.yu.yurentcar.domain.car.dto.UsableCarResponseDto;
-import com.yu.yurentcar.domain.car.dto.UsableCarSearchRequestDto;
+import com.yu.yurentcar.domain.car.dto.*;
 import com.yu.yurentcar.domain.car.service.CarService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +31,25 @@ public class CarController {
     @GetMapping("details")
     public ResponseEntity<CarDetailsResponseDto> getCarDetails(@RequestParam String carNumber) {
         return ResponseEntity.ok(carService.getCarDetails(carNumber));
+    }
+
+    @GetMapping("/simple")
+    public ResponseEntity<CarResponseDto> getCarResponseDTO(@RequestParam String carNumber){
+        return ResponseEntity.ok(carService.getCarResponseDTO(carNumber));
+    }
+
+    @GetMapping("/car-specs")
+    public ResponseEntity<CarSpecDto> getCarSpecByCarNumber(@RequestParam String carNumber){
+        return ResponseEntity.ok(carService.getCarSpecByCarNumber(carNumber));
+    }
+
+    @GetMapping("/accidents")
+    public ResponseEntity<List<String>> getAccidentListByCarNumber(@RequestParam String carNumber){
+        return ResponseEntity.ok(carService.getAccidentListByCarNumber(carNumber));
+    }
+
+    @GetMapping("/repairs")
+    public ResponseEntity<List<String>> getRepairListByCarNumber(@RequestParam String carNumber){
+        return ResponseEntity.ok(carService.getRepairListByCarNumber(carNumber));
     }
 }

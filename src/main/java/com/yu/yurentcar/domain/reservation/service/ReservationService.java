@@ -3,6 +3,7 @@ package com.yu.yurentcar.domain.reservation.service;
 import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationDetailDto;
+import com.yu.yurentcar.domain.reservation.dto.ReservationListResponseDto;
 import com.yu.yurentcar.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.geo.Point;
@@ -47,5 +48,10 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public ReservationDetailDto getNowReservationDetailByUsername(String username) {
         return reservationRepository.findNowReservationDetailByUsername(username);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationListResponseDto> getReservationListByUsername(String username){
+        return reservationRepository.getReservationListByUsername(username);
     }
 }
