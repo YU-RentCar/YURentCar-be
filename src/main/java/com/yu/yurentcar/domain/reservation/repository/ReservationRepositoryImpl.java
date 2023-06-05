@@ -5,7 +5,9 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
+import com.yu.yurentcar.domain.car.entity.QCarSpecification;
 import com.yu.yurentcar.domain.reservation.dto.ReservationDetailDto;
+import com.yu.yurentcar.domain.reservation.dto.ReservationListResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.geo.Point;
@@ -18,12 +20,14 @@ import static com.yu.yurentcar.domain.branch.entity.QBranch.branch;
 import static com.yu.yurentcar.domain.car.entity.QCar.car;
 import static com.yu.yurentcar.domain.car.entity.QCarSpecification.carSpecification;
 import static com.yu.yurentcar.domain.reservation.entity.QReservation.reservation;
+import static com.yu.yurentcar.domain.reservation.entity.QReview.review;
 import static com.yu.yurentcar.domain.user.entity.QUser.user;
 
 @Log4j2
 @Repository
 @RequiredArgsConstructor
 public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
+    QCarSpecification carSpec = carSpecification;
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -57,7 +61,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     @Override
     public CarResponseDto getCarDtoByUsername(String username) {
         return queryFactory
-                .select(Projections.constructor(CarResponseDto.class, car.carNumber, car.totalDistance, car.createdAt))
+                .select(Projections.constructor(CarResponseDto.class, car.carSpec.carName, car.carNumber, car.totalDistance))
                 .from(car)
                 .where(car.eq(findLatestReservationInfo(username)
                         .select(reservation.car))).fetchFirst();
@@ -66,9 +70,10 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     @Override
     public CarSpecDto getCarSpecificationDtoByUsername(String username) {
         return queryFactory
-                .select(Projections.constructor(CarSpecDto.class, carSpecification.carName, carSpecification.carSize, carSpecification.oilType, carSpecification.releaseDate, carSpecification.maxPassenger, carSpecification.transmission, carSpecification.carBrand, carSpecification.isKorean))
-                .from(carSpecification)
-                .where(carSpecification.eq(queryFactory
+                .select(Projections.constructor(CarSpecDto.class,carSpec.oilType,carSpec.releaseDate,car.createdAt,carSpec.maxPassenger,carSpec.transmission,carSpec.carBrand,carSpec.isKorean))
+                .from(car)
+                .innerJoin(car.carSpec,carSpec)
+                .where(car.carSpec.eq(queryFactory
                         .select(car.carSpec)
                         .from(car)
                         .where(car.eq(
@@ -99,6 +104,20 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .innerJoin(car.branch, branch)
                 .where(reservation.eq(findLatestReservationInfo(username).select(reservation)))
                 .fetchFirst();
+    }
+
+    @Override
+    public List<ReservationListResponseDto> getReservationListByUsername(String username) {
+        return queryFactory
+                .select(Projections.constructor(ReservationListResponseDto.class,
+                        branch.branchName, reservation.startDate, reservation.endDate, review.reviewId.isNotNull()))
+                .from(reservation)
+                .leftJoin(review).on(reservation.eq(review.reservation))
+                .innerJoin(reservation.car.branch, branch)
+                .where(reservation.user.username.eq(username))
+                .where(reservation.endDate.before(LocalDateTime.now()))
+                .orderBy(reservation.endDate.desc())
+                .fetch();
     }
 
     private JPAQuery<?> findLatestReservationInfo(String username) {
