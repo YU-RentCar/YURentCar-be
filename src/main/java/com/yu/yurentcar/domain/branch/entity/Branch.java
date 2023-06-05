@@ -2,6 +2,7 @@ package com.yu.yurentcar.domain.branch.entity;
 
 import com.yu.yurentcar.global.BaseTimeEntity;
 import com.yu.yurentcar.global.SiDoType;
+import com.yu.yurentcar.global.SiDoTypeToStringAttributeConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -34,6 +35,7 @@ public class Branch extends BaseTimeEntity {
     private Double longitude;
 
     @NotNull
+    @Convert(converter = SiDoTypeToStringAttributeConverter.class)
     @Column(name = "si_do", length = 50)
     private SiDoType siDo;
 
