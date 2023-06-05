@@ -1,9 +1,10 @@
 package com.yu.yurentcar.domain.branch.entity;
 
+import com.yu.yurentcar.BaseTimeEntity;
 import com.yu.yurentcar.domain.user.entity.Admin;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,11 +15,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @DynamicUpdate
 @DynamicInsert
 @Table(name = "notice")
-public class Notice {
+public class Notice extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notice_id")
@@ -47,4 +47,14 @@ public class Notice {
 
     @Column(name = "finish_date")
     private LocalDateTime finishDate;
+
+    @Builder
+    public Notice(@NotNull Branch branch, @NotNull Admin admin, @NotNull String title, @NotNull String description, String photoUrl, LocalDateTime finishDate) {
+        this.branch = branch;
+        this.admin = admin;
+        this.title = title;
+        this.description = description;
+        this.photoUrl = photoUrl;
+        this.finishDate = finishDate;
+    }
 }
