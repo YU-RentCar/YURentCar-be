@@ -114,7 +114,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .joinType(joinType)
                 .licenseEnumSet(EnumSet.noneOf(DriverLicense.class))
                 .preferSize(EnumSet.noneOf(CarSize.class))
-                .licenseEnumSet(EnumSet.noneOf(DriverLicense.class))
+                .preferOilTypeSet(new OilTypeBitmap(EnumSet.noneOf(OilType.class)))
+                .preferTransmissionSet(new TransmissionBitmap(EnumSet.noneOf(Transmission.class)))
                 .preferMinPassenger(1)
                 .build();
         userRepository.saveAndFlush(newUser);
