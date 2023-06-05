@@ -22,7 +22,7 @@ public class BranchService {
     public List<String> getBranchNameList(String siDoString) {
         SiDoType siDo;
         try {
-            siDo = EnumValueConvertUtils.ofCode(SiDoType.class, siDoString);
+            siDo = EnumValueConvertUtils.ofDesc(SiDoType.class, siDoString);
         } catch (RuntimeException e) {
             siDo = null;
         }

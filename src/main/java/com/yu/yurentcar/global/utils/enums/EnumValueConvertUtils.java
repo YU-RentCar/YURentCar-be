@@ -2,6 +2,7 @@ package com.yu.yurentcar.global.utils.enums;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +11,18 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EnumValueConvertUtils {
+    public static <E extends Enum<E> & EnumValue<T>, T> E ofDesc(Class<E> enumClass,
+                                                                 String desc) {
+        if(!StringUtils.hasText(desc))
+            return null;
+
+        return EnumSet.allOf(enumClass).stream()
+                .filter(v -> v.getDesc().equals(desc))
+                .findAny()
+                .orElseThrow(() -> new RuntimeException(String.
+                        format("enum=[%s], desc=[%s]가 존재하지 않습니다.", enumClass.getName(), desc)));
+    }
+
     public static <E extends Enum<E> & EnumValue<T>, T> E ofCode(Class<E> enumClass,
                                                            T code) {
         if(code == null)
