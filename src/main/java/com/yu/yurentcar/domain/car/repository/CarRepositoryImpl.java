@@ -1,6 +1,7 @@
 package com.yu.yurentcar.domain.car.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.yu.yurentcar.domain.car.dto.*;
@@ -48,6 +49,21 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
     }
 
     public JPAQuery<Long> isCarUsable(SiDoType siDo, String branchName, LocalDateTime startTime, LocalDateTime endTime) {
+        return queryFactory.selectDistinct(reservation.car.carId)
+                .from(reservation)
+                .innerJoin(reservation.car, car)
+                //특정 지점의 차만 필터링
+                .where(
+                        car.branch.in(
+                                queryFactory.selectDistinct(branch)
+                                        .from(branch)
+                                        .where(branch.siDo.eq(siDo).and(branch.branchName.eq(branchName)))
+                        )
+                )
+                .where(getUsableDateFilter(startTime, endTime));
+    }
+
+    public BooleanExpression getUsableDateFilter(LocalDateTime startTime, LocalDateTime endTime) {
         LocalDateTime startOffset, endOffset;
         if(startTime.getHour() < 12) {
             startOffset = startTime.minusDays(1);
@@ -66,19 +82,7 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
         }
         log.info("start offset : " + startOffset);
         log.info("end offset : " + endOffset);
-        return queryFactory.selectDistinct(reservation.car.carId)
-                .from(reservation)
-                .innerJoin(reservation.car, car)
-                //특정 지점의 차만 필터링
-                .where(
-                        car.branch.in(
-                                queryFactory.selectDistinct(branch)
-                                        .from(branch)
-                                        .where(branch.siDo.eq(siDo).and(branch.branchName.eq(branchName)))
-                        )
-                )
-                .where(reservation.startDate.before(endOffset).and(reservation.endDate.after(startOffset))
-                );
+        return reservation.startDate.before(endOffset).and(reservation.endDate.after(startOffset));
     }
 
     @Override
