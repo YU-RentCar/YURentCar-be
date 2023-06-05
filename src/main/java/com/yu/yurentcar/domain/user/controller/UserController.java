@@ -112,4 +112,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.getNowReservationDetailByUsername(auth.getUsername()));
     }
 
+    @GetMapping(value="/reservations")
+    public ResponseEntity<List<ReservationListResponseDto>> getReservationListByUsername(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth) {
+        log.info("username = "+auth.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.getReservationListByUsername(auth.getUsername()));
+    }
 }
