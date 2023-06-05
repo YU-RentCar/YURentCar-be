@@ -92,4 +92,9 @@ public class EnumValueConvertUtils {
 
         return list;
     }
+
+    public static <E extends Enum<E> & EnumValue<?>> List<String> getEnumToDescList(Class<E> enumClass) {
+        EnumSet<E> enumSet = EnumSet.allOf(enumClass);
+        return enumSet.stream().map(E::getDesc).toList();
+    }
 }
