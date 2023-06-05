@@ -17,7 +17,13 @@ public class BranchService {
         this.branchRepository = branchRepository;
     }
 
-    public List<String> getBranchNameList(String siDo) {
+    public List<String> getBranchNameList(String siDoString) {
+        SiDoType siDo;
+        try {
+            siDo = EnumValueConvertUtils.ofCode(SiDoType.class, siDoString);
+        } catch (RuntimeException e) {
+            siDo = null;
+        }
         return branchRepository.findBranchNameListBySiDo(siDo);
     }
 }

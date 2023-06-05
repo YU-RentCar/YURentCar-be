@@ -35,7 +35,7 @@ public class Branch extends BaseTimeEntity {
 
     @NotNull
     @Column(name = "si_do", length = 50)
-    private String siDo;
+    private SiDoType siDo;
 
     @NotNull
     @Column(name = "gu_gun",  length = 50)

@@ -7,6 +7,7 @@ import com.yu.yurentcar.domain.car.dto.CarDetailsResponseDto;
 import com.yu.yurentcar.domain.car.dto.UsableCarResponseDto;
 import com.yu.yurentcar.domain.car.dto.UsableCarSearchRequestDto;
 import com.yu.yurentcar.domain.car.entity.QCarSpecification;
+import com.yu.yurentcar.global.SiDoType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
@@ -48,7 +49,7 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                 .fetch();
     }
 
-    public JPAQuery<Long> isCarUsable(String siDo, String branchName, LocalDateTime startTime, LocalDateTime endTime) {
+    public JPAQuery<Long> isCarUsable(SiDoType siDo, String branchName, LocalDateTime startTime, LocalDateTime endTime) {
         LocalDateTime startOffset, endOffset;
         if(startTime.getHour() < 12) {
             startOffset = startTime.minusDays(1);
