@@ -1,4 +1,4 @@
-package com.yu.yurentcar;
+package com.yu.yurentcar.global;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

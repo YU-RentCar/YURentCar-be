@@ -1,4 +1,4 @@
-package com.yu.yurentcar.utils.enums;
+package com.yu.yurentcar.global.utils.enums;
 
 public interface EnumValue<T> {
     T getDbValue();

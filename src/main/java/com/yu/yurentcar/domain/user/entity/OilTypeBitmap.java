@@ -1,6 +1,6 @@
 package com.yu.yurentcar.domain.user.entity;
 
-import com.yu.yurentcar.utils.enums.EnumBitmapValue;
+import com.yu.yurentcar.global.utils.enums.EnumBitmapValue;
 import lombok.Getter;
 
 import java.util.EnumSet;

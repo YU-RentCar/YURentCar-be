@@ -1,9 +1,9 @@
 package com.yu.yurentcar.security.service;
 
+import com.yu.yurentcar.global.utils.TokenProvider;
 import com.yu.yurentcar.security.dto.TokenDto;
 import com.yu.yurentcar.security.entity.Token;
 import com.yu.yurentcar.security.repository.TokenRedisRepository;
-import com.yu.yurentcar.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

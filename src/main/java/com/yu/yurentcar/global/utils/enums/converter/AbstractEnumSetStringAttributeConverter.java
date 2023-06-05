@@ -1,7 +1,7 @@
-package com.yu.yurentcar.utils.enums.converter;
+package com.yu.yurentcar.global.utils.enums.converter;
 
-import com.yu.yurentcar.utils.enums.EnumValue;
-import com.yu.yurentcar.utils.enums.EnumValueConvertUtils;
+import com.yu.yurentcar.global.utils.enums.EnumValue;
+import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
 import jakarta.persistence.AttributeConverter;
 import lombok.Getter;
 

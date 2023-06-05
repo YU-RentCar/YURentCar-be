@@ -3,6 +3,7 @@ package com.yu.yurentcar.domain.branch.repository;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.yu.yurentcar.global.SiDoType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;

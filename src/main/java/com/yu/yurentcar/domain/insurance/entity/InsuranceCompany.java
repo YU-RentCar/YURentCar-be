@@ -1,7 +1,7 @@
 package com.yu.yurentcar.domain.insurance.entity;
 
 
-import com.yu.yurentcar.BaseTimeEntity;
+import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

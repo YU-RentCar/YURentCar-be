@@ -1,10 +1,13 @@
 package com.yu.yurentcar.domain.reservation.entity;
 
 
-import com.yu.yurentcar.BaseTimeEntity;
+import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
