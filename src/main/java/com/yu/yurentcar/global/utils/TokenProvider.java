@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class TokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer";
-    private static final long ACCESS_EXPIRE = 1000 * 60 * 10 * 100;
+    private static final long ACCESS_EXPIRE = 1000 * 60 * 10;
     public static long REFRESH_EXPIRE = 1000 * 60 * 60 * 24;
 
     @Value("${jwt.secret-key}")
