@@ -22,7 +22,7 @@ public class NoticeService {
     public List<NoticeResponseDto> getNoticesByBranchName(String province, String branchName) {
         SiDoType siDo;
         try {
-            siDo = EnumValueConvertUtils.ofCode(SiDoType.class, province);
+            siDo = EnumValueConvertUtils.ofDesc(SiDoType.class, province);
         } catch (RuntimeException e) {
             siDo = null;
         }
