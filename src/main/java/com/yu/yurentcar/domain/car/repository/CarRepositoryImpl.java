@@ -3,9 +3,7 @@ package com.yu.yurentcar.domain.car.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.yu.yurentcar.domain.car.dto.CarDetailsResponseDto;
-import com.yu.yurentcar.domain.car.dto.UsableCarResponseDto;
-import com.yu.yurentcar.domain.car.dto.UsableCarSearchRequestDto;
+import com.yu.yurentcar.domain.car.dto.*;
 import com.yu.yurentcar.domain.car.entity.QCarSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -96,5 +94,42 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                 .innerJoin(car.carSpec, carSpec)
                 .where(car.carNumber.eq(carNumber))
                 .fetchOne();
+    }
+
+    @Override
+    public CarResponseDto findCarResponseDtoByCarNumber(String carNumber) {
+        return queryFactory
+                .select(Projections.constructor(CarResponseDto.class,car.carSpec.carName,car.carNumber,car.totalDistance))
+                .from(car)
+                .where(car.carNumber.eq(carNumber))
+                .fetchFirst();
+    }
+
+    @Override
+    public CarSpecDto findCarSpecByCarNumber(String carNumber) {
+        return queryFactory
+                .select(Projections.constructor(CarSpecDto.class,carSpec.oilType,carSpec.releaseDate,car.createdAt,carSpec.maxPassenger,carSpec.transmission,carSpec.carBrand,carSpec.isKorean))
+                .from(car)
+                .innerJoin(car.carSpec,carSpec)
+                .where(car.carNumber.eq(carNumber))
+                .fetchFirst();
+    }
+
+    @Override
+    public List<String> findAccidentListByCarNumber(String carNumber) {
+        return queryFactory
+                .select(car.accidentList)
+                .from(car)
+                .where(car.carNumber.eq(carNumber))
+                .fetchFirst();
+    }
+
+    @Override
+    public List<String> findRepairListByCarNumber(String carNumber) {
+        return queryFactory
+                .select(car.repairList)
+                .from(car)
+                .where(car.carNumber.eq(carNumber))
+                .fetchFirst();
     }
 }
