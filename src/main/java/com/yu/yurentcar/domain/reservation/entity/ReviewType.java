@@ -1,6 +1,6 @@
 package com.yu.yurentcar.domain.reservation.entity;
 
-import com.yu.yurentcar.utils.enums.EnumValue;
+import com.yu.yurentcar.global.utils.enums.EnumValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

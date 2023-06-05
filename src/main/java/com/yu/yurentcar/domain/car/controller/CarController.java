@@ -52,4 +52,9 @@ public class CarController {
     public ResponseEntity<List<String>> getRepairListByCarNumber(@RequestParam String carNumber){
         return ResponseEntity.ok(carService.getRepairListByCarNumber(carNumber));
     }
+
+    @GetMapping("/views")
+    public ResponseEntity<List<CarResponseDto>> getCarListByCarNumbers(@RequestParam String[] carNumbers){
+        return ResponseEntity.ok(carService.getCarListByCarNumbers(carNumbers));
+    }
 }
