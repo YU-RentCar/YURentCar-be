@@ -1,10 +1,10 @@
 package com.yu.yurentcar.domain.car.entity;
 
-import com.yu.yurentcar.BaseTimeEntity;
 import com.yu.yurentcar.domain.car.entity.converter.TransmissionToBoolAttributeConverter;
 import com.yu.yurentcar.domain.user.entity.CarSize;
 import com.yu.yurentcar.domain.user.entity.OilType;
 import com.yu.yurentcar.domain.user.entity.Transmission;
+import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

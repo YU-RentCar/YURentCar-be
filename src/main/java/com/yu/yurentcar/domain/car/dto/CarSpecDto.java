@@ -15,11 +15,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class CarSpecDto {
-    private OilType oilType;
+    private String oilType;
     private LocalDateTime releaseDate;
     private LocalDateTime createdAt;
     private Integer maxPassenger;
-    private Transmission transmission;
-    private CarBrand carBrand;
-    private Boolean isKorean;
+    private String transmission;
+    private String carBrand;
+    private String isKorean;
+
+    public CarSpecDto(OilType oilType, LocalDateTime releaseDate, LocalDateTime createdAt, Integer maxPassenger, Transmission transmission, CarBrand carBrand, Boolean isKorean) {
+        this.oilType = oilType.getDesc();
+        this.releaseDate = releaseDate;
+        this.createdAt = createdAt;
+        this.maxPassenger = maxPassenger;
+        this.transmission = transmission.getDesc();
+        this.carBrand = carBrand.getDesc();
+        this.isKorean = isKorean ? "국산" : "외제";
+    }
 }

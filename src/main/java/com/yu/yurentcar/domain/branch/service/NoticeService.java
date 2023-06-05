@@ -4,6 +4,8 @@ import com.yu.yurentcar.domain.branch.dto.NoticeContentResponseDto;
 import com.yu.yurentcar.domain.branch.dto.NoticeResponseDto;
 import com.yu.yurentcar.domain.branch.entity.Notice;
 import com.yu.yurentcar.domain.branch.repository.NoticeRepository;
+import com.yu.yurentcar.global.SiDoType;
+import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +20,13 @@ public class NoticeService {
 
     @Transactional(readOnly = true)
     public List<NoticeResponseDto> getNoticesByBranchName(String province, String branchName) {
-        return noticeRepository.getNoticesByBranchName(province, branchName);
+        SiDoType siDo;
+        try {
+            siDo = EnumValueConvertUtils.ofCode(SiDoType.class, province);
+        } catch (RuntimeException e) {
+            siDo = null;
+        }
+        return noticeRepository.getNoticesByBranchName(siDo, branchName);
     }
 
     @Transactional(readOnly = true)

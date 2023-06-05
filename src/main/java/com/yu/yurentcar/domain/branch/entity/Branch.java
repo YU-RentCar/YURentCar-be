@@ -1,6 +1,7 @@
 package com.yu.yurentcar.domain.branch.entity;
 
-import com.yu.yurentcar.BaseTimeEntity;
+import com.yu.yurentcar.global.BaseTimeEntity;
+import com.yu.yurentcar.global.SiDoType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -34,7 +35,7 @@ public class Branch extends BaseTimeEntity {
 
     @NotNull
     @Column(name = "si_do", length = 50)
-    private String siDo;
+    private SiDoType siDo;
 
     @NotNull
     @Column(name = "gu_gun",  length = 50)

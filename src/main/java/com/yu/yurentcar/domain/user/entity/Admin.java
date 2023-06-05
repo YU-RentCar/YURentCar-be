@@ -1,7 +1,7 @@
 package com.yu.yurentcar.domain.user.entity;
 
-import com.yu.yurentcar.BaseTimeEntity;
 import com.yu.yurentcar.domain.branch.entity.Branch;
+import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
