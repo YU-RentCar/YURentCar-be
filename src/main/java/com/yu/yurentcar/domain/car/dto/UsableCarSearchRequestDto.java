@@ -27,7 +27,7 @@ public class UsableCarSearchRequestDto {
     private final int minCount;
     private final EnumSet<OilType> oilTypes;
     private final EnumSet<Transmission> transmissions;
-    private final String siDo;
+    private final SiDoType siDo;
     private final String branchName;
 
     @Builder
@@ -40,7 +40,14 @@ public class UsableCarSearchRequestDto {
         this.minCount = minCount;
         this.oilTypes = EnumValueConvertUtils.ofBoolListCode(OilType.class, oilTypes);
         this.transmissions = EnumValueConvertUtils.ofBoolListCode(Transmission.class, transmissions);
-        this.siDo = siDo;
+        SiDoType type;
+        try {
+            type = EnumValueConvertUtils.ofCode(SiDoType.class, siDo);
+        } catch (RuntimeException e) {
+            log.error(e);
+            type = null;
+        }
+        this.siDo = type;
         this.branchName = branchName;
     }
 }
