@@ -147,4 +147,13 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                 .where(getUsableDateFilter(startTime, endTime))
                 .limit(1).fetch().isEmpty();
     }
+
+    @Override
+    public List<CarResponseDto> findCarsByCarNumbers(String[] carNumber) {
+        return queryFactory
+                .select(Projections.constructor(CarResponseDto.class,car.carSpec.carName,car.carNumber,car.totalDistance))
+                .from(car)
+                .where(car.carNumber.in(carNumber))
+                .fetch();
+    }
 }
