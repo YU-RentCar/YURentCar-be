@@ -1,4 +1,4 @@
-package com.yu.yurentcar.utils;
+package com.yu.yurentcar.global.utils;
 
 import com.yu.yurentcar.security.dto.LoginCookies;
 import com.yu.yurentcar.security.dto.TokenDto;

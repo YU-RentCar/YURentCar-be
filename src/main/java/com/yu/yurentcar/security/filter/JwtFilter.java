@@ -1,7 +1,7 @@
 package com.yu.yurentcar.security.filter;
 
 import com.yu.yurentcar.domain.user.service.CustomUserDetailsService;
-import com.yu.yurentcar.utils.TokenProvider;
+import com.yu.yurentcar.global.utils.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

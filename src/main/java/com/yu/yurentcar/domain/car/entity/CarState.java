@@ -1,6 +1,6 @@
 package com.yu.yurentcar.domain.car.entity;
 
-import com.yu.yurentcar.utils.enums.EnumValue;
+import com.yu.yurentcar.global.utils.enums.EnumValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

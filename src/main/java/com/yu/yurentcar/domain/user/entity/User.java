@@ -1,12 +1,12 @@
 package com.yu.yurentcar.domain.user.entity;
 
-import com.yu.yurentcar.BaseTimeEntity;
 import com.yu.yurentcar.domain.user.dto.PreferFilterDto;
 import com.yu.yurentcar.domain.user.entity.converter.CarSizeBoolArrayConverter;
 import com.yu.yurentcar.domain.user.entity.converter.DriverLicenseSetToStringArrayConverter;
 import com.yu.yurentcar.domain.user.entity.converter.OilTypeBitmapConverter;
 import com.yu.yurentcar.domain.user.entity.converter.TransmissionBitmapConverter;
-import com.yu.yurentcar.utils.enums.EnumValueConvertUtils;
+import com.yu.yurentcar.global.BaseTimeEntity;
+import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;

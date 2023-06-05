@@ -7,7 +7,7 @@ import com.yu.yurentcar.domain.user.entity.OilType;
 import com.yu.yurentcar.domain.user.entity.Transmission;
 import com.yu.yurentcar.domain.user.entity.User;
 import com.yu.yurentcar.domain.user.repository.UserRepository;
-import com.yu.yurentcar.utils.enums.EnumValueConvertUtils;
+import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

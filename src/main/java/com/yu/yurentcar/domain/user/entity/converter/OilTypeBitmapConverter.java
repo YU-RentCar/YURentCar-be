@@ -2,9 +2,9 @@ package com.yu.yurentcar.domain.user.entity.converter;
 
 import com.yu.yurentcar.domain.user.entity.OilType;
 import com.yu.yurentcar.domain.user.entity.OilTypeBitmap;
-import com.yu.yurentcar.utils.enums.EnumBitmapValue;
-import com.yu.yurentcar.utils.enums.EnumValueConvertUtils;
-import com.yu.yurentcar.utils.enums.converter.AbstractEnumSetToBitmapAttributeConverter;
+import com.yu.yurentcar.global.utils.enums.EnumBitmapValue;
+import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
+import com.yu.yurentcar.global.utils.enums.converter.AbstractEnumSetToBitmapAttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.Getter;
 

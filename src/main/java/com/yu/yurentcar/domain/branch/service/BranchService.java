@@ -1,6 +1,8 @@
 package com.yu.yurentcar.domain.branch.service;
 
 import com.yu.yurentcar.domain.branch.repository.BranchRepository;
+import com.yu.yurentcar.global.SiDoType;
+import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
