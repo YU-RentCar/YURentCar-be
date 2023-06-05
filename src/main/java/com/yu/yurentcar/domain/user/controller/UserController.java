@@ -1,9 +1,6 @@
 package com.yu.yurentcar.domain.user.controller;
 
-import com.yu.yurentcar.domain.user.dto.ChangeNicknameDto;
-import com.yu.yurentcar.domain.user.dto.PreferFilterDto;
-import com.yu.yurentcar.domain.user.dto.UserAuthDto;
-import com.yu.yurentcar.domain.user.dto.UserProfileDto;
+import com.yu.yurentcar.domain.user.dto.*;
 import com.yu.yurentcar.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -64,4 +61,11 @@ public class UserController {
         log.info("username : " + auth.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserProfile(auth.getUsername()));
     }
+
+    @GetMapping(value="/licenses")
+    public ResponseEntity<DriverLicenseResponseDto> getLicense(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth){
+        log.info("username : " + auth.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getLicense(auth.getUsername()));
+    }
+
 }
