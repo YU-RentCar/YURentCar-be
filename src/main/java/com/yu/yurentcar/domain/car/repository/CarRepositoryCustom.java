@@ -2,6 +2,7 @@ package com.yu.yurentcar.domain.car.repository;
 
 import com.yu.yurentcar.domain.car.dto.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CarRepositoryCustom {
@@ -11,4 +12,5 @@ public interface CarRepositoryCustom {
     CarSpecDto findCarSpecByCarNumber(String carNumber);
     List<String> findAccidentListByCarNumber(String carNumber);
     List<String> findRepairListByCarNumber(String carNumber);
+    Boolean usableByCarNumberAndDate(String carNumber, LocalDateTime startTime, LocalDateTime endTime);
 }

@@ -137,4 +137,14 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                 .where(car.carNumber.eq(carNumber))
                 .fetchFirst();
     }
+
+    @Override
+    public Boolean usableByCarNumberAndDate(String carNumber, LocalDateTime startTime, LocalDateTime endTime) {
+        return queryFactory.selectDistinct(reservation.car.carId)
+                .from(reservation)
+                .innerJoin(reservation.car, car)
+                .where(car.carNumber.eq(carNumber))
+                .where(getUsableDateFilter(startTime, endTime))
+                .limit(1).fetch().isEmpty();
+    }
 }
