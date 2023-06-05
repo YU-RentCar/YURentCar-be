@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class NoticeResponseDto {
     private Long noticeId;
     private String title;
+    private LocalDateTime startDate;
     private LocalDateTime finishDate;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
