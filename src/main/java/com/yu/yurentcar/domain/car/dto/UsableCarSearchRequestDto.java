@@ -42,7 +42,7 @@ public class UsableCarSearchRequestDto {
         this.transmissions = EnumValueConvertUtils.ofBoolListCode(Transmission.class, transmissions);
         SiDoType type;
         try {
-            type = EnumValueConvertUtils.ofCode(SiDoType.class, siDo);
+            type = EnumValueConvertUtils.ofDesc(SiDoType.class, siDo);
         } catch (RuntimeException e) {
             log.error(e);
             type = null;
