@@ -4,6 +4,7 @@ import com.yu.yurentcar.domain.branch.repository.BranchRepository;
 import com.yu.yurentcar.global.SiDoType;
 import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,5 +28,11 @@ public class BranchService {
             siDo = null;
         }
         return branchRepository.findBranchNameListBySiDo(siDo);
+    }
+
+    @Transactional(readOnly = true)
+    public Point getGeoPoint(String province, String branchName) {
+        SiDoType siDo = EnumValueConvertUtils.ofDesc(SiDoType.class, province);
+        return branchRepository.getGeoPointByBranchName(siDo, branchName);
     }
 }
