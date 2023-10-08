@@ -44,10 +44,14 @@ public class Key extends BaseTimeEntity {
     }
 
     public Key updateKey(Car car, KeyStorage keyStorage, String rfid, KeyState keyState) {
-        this.car = car;
-        this.keyStorage = keyStorage;
-        this.rfid = rfid;
-        this.state = keyState;
+        if (car != null)
+            this.car = car;
+        if (keyStorage != null)
+            this.keyStorage = keyStorage;
+        if (rfid != null)
+            this.rfid = rfid;
+        if (keyState != null)
+            this.state = keyState;
         return this;
     }
 }

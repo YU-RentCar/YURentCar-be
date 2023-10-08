@@ -25,14 +25,14 @@ public class NoticeService {
     private final AdminRepository adminRepository;
 
     @Transactional(readOnly = true)
-    public List<NoticeResponseDto> getNoticesByBranchName(String province, String branchName) {
+    public List<NoticeResponseDto> getNoticesByBranchName(String province, String branchName, Integer count) {
         SiDoType siDo;
         try {
             siDo = EnumValueConvertUtils.ofDesc(SiDoType.class, province);
         } catch (RuntimeException e) {
             siDo = null;
         }
-        return noticeRepository.getNoticesByBranchName(siDo, branchName);
+        return noticeRepository.getNoticesByBranchName(siDo, branchName, count);
     }
 
     @Transactional(readOnly = true)
@@ -73,11 +73,11 @@ public class NoticeService {
         Optional<Admin> lookupAdmin = adminRepository.findByUsername(username);
         Optional<Notice> lookupNotice = noticeRepository.findById(noticeId);
         if (lookupAdmin.isEmpty()) throw new RuntimeException("없는 관리자입니다.");
+        if (lookupNotice.isEmpty()) throw new RuntimeException("없는 공지사항입니다.");
         //수정하려는 관리자와 작성한 관리자가 같은 지점 관리자인지 확인
         if (!lookupAdmin.get().getBranch().equals(lookupNotice.get().getBranch()))
             throw new RuntimeException("다른 지점 관리자입니다. 권한이 없습니다.");
-        noticeRepository.save(lookupNotice.orElseThrow(() -> new RuntimeException("없는 공지사항입니다."))
-                .updateNotice(noticeDto, lookupAdmin.get()));
+        noticeRepository.save(lookupNotice.get().updateNotice(noticeDto, lookupAdmin.get()));
         return true;
     }
 

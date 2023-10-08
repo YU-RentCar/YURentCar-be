@@ -51,7 +51,7 @@ public class CarSpecService {
 
         Optional<CarSpecification> lookupCarSpec = carSpecificationRepository
                 .findByCarBrandAndCarNameAndOilTypeAndReleaseDateAndTransmission(
-                        Enum.valueOf(CarBrand.class, carSpecRequestDto.getCarBrand()),
+                        EnumValueConvertUtils.ofDesc(CarBrand.class,carSpecRequestDto.getCarBrand()),
                         carSpecRequestDto.getCarName(),
                         EnumValueConvertUtils.ofDesc(OilType.class, carSpecRequestDto.getOilType()),
                         carSpecRequestDto.getReleaseDate(),
@@ -65,7 +65,7 @@ public class CarSpecService {
                         .carSize(EnumValueConvertUtils.ofDesc(CarSize.class, carSpecRequestDto.getCarSize()))
                         .oilType(EnumValueConvertUtils.ofDesc(OilType.class, carSpecRequestDto.getOilType()))
                         .transmission(EnumValueConvertUtils.ofDesc(Transmission.class, carSpecRequestDto.getTransmission()))
-                        .carBrand(Enum.valueOf(CarBrand.class, carSpecRequestDto.getCarBrand()))
+                        .carBrand(EnumValueConvertUtils.ofDesc(CarBrand.class,carSpecRequestDto.getCarBrand()))
                         .releaseDate(carSpecRequestDto.getReleaseDate())
                         .build()
         );
