@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.branch.entity;
 
+import com.yu.yurentcar.domain.branch.dto.NoticeDto;
 import com.yu.yurentcar.domain.user.entity.Admin;
 import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -61,5 +62,18 @@ public class Notice extends BaseTimeEntity {
         this.photoUrl = photoUrl;
         this.startDate = startDate;
         this.finishDate = finishDate;
+    }
+
+    public Notice updateNotice(NoticeDto noticeDto, Admin admin){
+        this.title = noticeDto.getTitle();
+        if(startDate != null)
+            this.startDate = noticeDto.getStartDate();
+        if(finishDate != null)
+            this.finishDate = noticeDto.getFinishDate();
+        this.description = noticeDto.getDescription();
+        if(photoUrl != null)
+            this.photoUrl = noticeDto.getPhotoUrl();
+        this.admin = admin;
+        return this;
     }
 }
