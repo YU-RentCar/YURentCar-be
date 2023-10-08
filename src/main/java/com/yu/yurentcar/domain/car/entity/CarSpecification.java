@@ -7,10 +7,7 @@ import com.yu.yurentcar.domain.user.entity.Transmission;
 import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "car_specification")
 @ToString
+@EqualsAndHashCode
 public class CarSpecification extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
