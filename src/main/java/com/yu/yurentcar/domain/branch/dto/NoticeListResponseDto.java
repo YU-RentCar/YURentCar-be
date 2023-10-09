@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NoticeResponseDto {
+public class NoticeListResponseDto {
+    private Long noticeId;
     private String photoUrl;
     private String title;
     private String description;
