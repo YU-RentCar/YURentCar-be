@@ -1,8 +1,9 @@
 package com.yu.yurentcar.domain.branch.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.yu.yurentcar.domain.branch.dto.NoticeResponseDto;
+import com.yu.yurentcar.domain.branch.dto.NoticeSummaryDto;
 import com.yu.yurentcar.global.SiDoType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,21 +23,23 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<NoticeResponseDto> getNoticesByBranchName(SiDoType siDo, String branchName) {
+    public List<NoticeSummaryDto> getNoticesByBranchName(SiDoType siDo, String branchName, Integer count) {
         //notice 조회
         //지점네임을 던져줌
         //지점네임과 지점 관할구역으로 지점id 조회
         //notice테이블을 지점id로 걸러냄
         //종료일이 현재보다 뒤인 경우 혹은 종료일이 없는 경우만 남겨냄
-        return queryFactory
-                .select(Projections.constructor(NoticeResponseDto.class, notice.noticeId,notice.title,notice.finishDate,notice.createdAt,notice.modifiedAt))
+        JPAQuery<NoticeSummaryDto> query = queryFactory
+                .select(Projections.constructor(NoticeSummaryDto.class, notice.noticeId, notice.photoUrl, notice.title, notice.description, notice.startDate, notice.finishDate, notice.modifiedAt))
                 .from(notice)
                 .where(notice.branch.eq(queryFactory
-                        .selectFrom(branch)
-                        .where(branch.branchName.eq(branchName).and(branch.siDo.eq(siDo))))
+                                .selectFrom(branch)
+                                .where(branch.branchName.eq(branchName).and(branch.siDo.eq(siDo))))
                         .and(notice.finishDate.gt(LocalDateTime.now()).or(notice.finishDate.isNull())))
-                .orderBy(notice.modifiedAt.desc())
-                .fetch();
-    }
+                .orderBy(notice.modifiedAt.desc());
+        if(count != 0)
+            query = query.limit(count);
 
+        return query.fetch();
+    }
 }

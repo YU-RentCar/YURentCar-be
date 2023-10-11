@@ -1,7 +1,7 @@
 package com.yu.yurentcar.domain.branch.controller;
 
-import com.yu.yurentcar.domain.branch.dto.NoticeContentResponseDto;
 import com.yu.yurentcar.domain.branch.dto.NoticeDto;
+import com.yu.yurentcar.domain.branch.dto.NoticeSummaryDto;
 import com.yu.yurentcar.domain.branch.dto.NoticeResponseDto;
 import com.yu.yurentcar.domain.branch.service.NoticeService;
 import lombok.extern.log4j.Log4j2;
@@ -23,13 +23,13 @@ public class NoticeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<NoticeResponseDto>> getNoticesByBranchName(@RequestParam String province, @RequestParam String branchName) {
-        log.info("branchName = " + branchName);
-        return ResponseEntity.status(HttpStatus.OK).body(noticeService.getNoticesByBranchName(province, branchName));
+    public ResponseEntity<List<NoticeSummaryDto>> getNoticesByBranchName(@RequestParam String province, @RequestParam String branchName, @RequestParam Integer count) {
+        log.info("getNoticesByBranchName = " + province + "\n" + branchName + "\n" + count);
+        return ResponseEntity.status(HttpStatus.OK).body(noticeService.getNoticesByBranchName(province, branchName,count));
     }
 
     @GetMapping("/details")
-    public ResponseEntity<NoticeContentResponseDto> getNoticeContentByNoticeId(@RequestParam Long noticeId) {
+    public ResponseEntity<NoticeResponseDto> getNoticeContentByNoticeId(@RequestParam Long noticeId) {
         log.info("noticeId = " + noticeId);
         return ResponseEntity.status(HttpStatus.OK).body(noticeService.getNoticeContentByNoticeId(noticeId));
     }

@@ -1,7 +1,7 @@
 package com.yu.yurentcar.domain.branch.service;
 
-import com.yu.yurentcar.domain.branch.dto.NoticeContentResponseDto;
 import com.yu.yurentcar.domain.branch.dto.NoticeDto;
+import com.yu.yurentcar.domain.branch.dto.NoticeSummaryDto;
 import com.yu.yurentcar.domain.branch.dto.NoticeResponseDto;
 import com.yu.yurentcar.domain.branch.entity.Notice;
 import com.yu.yurentcar.domain.branch.repository.NoticeRepository;
@@ -25,7 +25,7 @@ public class NoticeService {
     private final AdminRepository adminRepository;
 
     @Transactional(readOnly = true)
-    public List<NoticeResponseDto> getNoticesByBranchName(String province, String branchName, Integer count) {
+    public List<NoticeSummaryDto> getNoticesByBranchName(String province, String branchName, Integer count) {
         SiDoType siDo;
         try {
             siDo = EnumValueConvertUtils.ofDesc(SiDoType.class, province);
@@ -36,17 +36,16 @@ public class NoticeService {
     }
 
     @Transactional(readOnly = true)
-    public NoticeContentResponseDto getNoticeContentByNoticeId(Long noticeId) {
-        Optional<Notice> notice = noticeRepository.findById(noticeId);
-        if (notice.isEmpty()) throw new RuntimeException();
-        return NoticeContentResponseDto.builder()
-                .title(notice.get().getTitle())
-                .startDate(notice.get().getStartDate())
-                .finishDate(notice.get().getFinishDate())
-                .createdAt(notice.get().getCreatedAt())
-                .modifiedAt(notice.get().getModifiedAt())
-                .photoUrl(notice.get().getPhotoUrl())
-                .description(notice.get().getDescription())
+    public NoticeResponseDto getNoticeContentByNoticeId(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new RuntimeException("없는 공지사항입니다."));
+        return NoticeResponseDto.builder()
+                .photoUrl(notice.getPhotoUrl())
+                .title(notice.getTitle())
+                .description(notice.getDescription())
+                .startDate(notice.getStartDate())
+                .finishDate(notice.getFinishDate())
+                .modifiedAt(notice.getModifiedAt())
                 .build();
     }
 
