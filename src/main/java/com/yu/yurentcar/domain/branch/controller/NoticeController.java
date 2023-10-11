@@ -1,7 +1,7 @@
 package com.yu.yurentcar.domain.branch.controller;
 
 import com.yu.yurentcar.domain.branch.dto.NoticeDto;
-import com.yu.yurentcar.domain.branch.dto.NoticeListResponseDto;
+import com.yu.yurentcar.domain.branch.dto.NoticeSummaryDto;
 import com.yu.yurentcar.domain.branch.dto.NoticeResponseDto;
 import com.yu.yurentcar.domain.branch.service.NoticeService;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +23,7 @@ public class NoticeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<NoticeListResponseDto>> getNoticesByBranchName(@RequestParam String province, @RequestParam String branchName, @RequestParam Integer count) {
+    public ResponseEntity<List<NoticeSummaryDto>> getNoticesByBranchName(@RequestParam String province, @RequestParam String branchName, @RequestParam Integer count) {
         log.info("getNoticesByBranchName = " + province + "\n" + branchName + "\n" + count);
         return ResponseEntity.status(HttpStatus.OK).body(noticeService.getNoticesByBranchName(province, branchName,count));
     }
