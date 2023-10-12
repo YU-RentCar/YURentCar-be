@@ -3,6 +3,7 @@ package com.yu.yurentcar.domain.reservation.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.yu.yurentcar.domain.car.dto.CarEventResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
 import com.yu.yurentcar.domain.car.entity.QCarSpecification;
@@ -18,10 +19,13 @@ import java.util.List;
 
 import static com.yu.yurentcar.domain.branch.entity.QBranch.branch;
 import static com.yu.yurentcar.domain.car.entity.QCar.car;
+import static com.yu.yurentcar.domain.car.entity.QCarEvent.carEvent;
 import static com.yu.yurentcar.domain.car.entity.QCarSpecification.carSpecification;
+import static com.yu.yurentcar.domain.reservation.entity.QDriver.driver;
 import static com.yu.yurentcar.domain.reservation.entity.QReservation.reservation;
 import static com.yu.yurentcar.domain.reservation.entity.QReview.review;
 import static com.yu.yurentcar.domain.user.entity.QUser.user;
+
 
 @Log4j2
 @Repository
@@ -31,25 +35,33 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<String> getAccidentListByUsername(String username) {
-        return queryFactory
-                .select(car.accidentList)
+    public List<CarEventResponseDto> getAccidentListByUsername(String username) {
+        return queryFactory.select(Projections.constructor(CarEventResponseDto.class,
+                        carEvent.title,
+                        carEvent.eventDate,
+                        carEvent.content))
                 .from(car)
+                .innerJoin(car, carEvent.car)
                 .where(car.eq(
                         findLatestReservationInfo(username)
-                                .select(reservation.car))
-                ).fetchFirst();
+                                .select(reservation.car)).and(carEvent.isRepair.eq(false)))
+                .orderBy(carEvent.eventDate.asc())
+                .fetch();
     }
 
     @Override
-    public List<String> getRepairListByUsername(String username) {
-        return queryFactory
-                .select(car.repairList)
+    public List<CarEventResponseDto> getRepairListByUsername(String username) {
+        return queryFactory.select(Projections.constructor(CarEventResponseDto.class,
+                        carEvent.title,
+                        carEvent.eventDate,
+                        carEvent.content))
                 .from(car)
+                .innerJoin(car, carEvent.car)
                 .where(car.eq(
                         findLatestReservationInfo(username)
-                                .select(reservation.car))
-                ).fetchFirst();
+                                .select(reservation.car)).and(carEvent.isRepair.eq(true)))
+                .orderBy(carEvent.eventDate.asc())
+                .fetch();
     }
 
     @Override
@@ -70,9 +82,9 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     @Override
     public CarSpecDto getCarSpecificationDtoByUsername(String username) {
         return queryFactory
-                .select(Projections.constructor(CarSpecDto.class,carSpec.oilType,carSpec.releaseDate,car.createdAt,carSpec.maxPassenger,carSpec.transmission,carSpec.carBrand,carSpec.isKorean))
+                .select(Projections.constructor(CarSpecDto.class, carSpec.oilType, carSpec.releaseDate, car.createdAt, carSpec.maxPassenger, carSpec.transmission, carSpec.carBrand, carSpec.isKorean))
                 .from(car)
-                .innerJoin(car.carSpec,carSpec)
+                .innerJoin(car.carSpec, carSpec)
                 .where(car.carSpec.eq(queryFactory
                         .select(car.carSpec)
                         .from(car)
@@ -107,10 +119,27 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     }
 
     @Override
+    public List<String> findNowReservationDriversByUsername(String username) {
+        return queryFactory
+                .select(driver.driverName)
+                .from(driver)
+                .where(driver.reservation.eq(findLatestReservationInfo(username).select(reservation)))
+                .fetch();
+    }
+
+    @Override
     public List<ReservationListResponseDto> getReservationListByUsername(String username) {
         return queryFactory
                 .select(Projections.constructor(ReservationListResponseDto.class,
-                        branch.branchName, reservation.startDate, reservation.endDate, review.reviewId.isNotNull()))
+                        reservation.reservationId,
+                        reservation.car.carSpec.carName,
+                        reservation.car.carNumber,
+                        car.totalDistance,
+                        reservation.startDate,
+                        reservation.endDate,
+                        branch.branchName,
+                        reservation.reservationPrice,
+                        review.reviewId.isNotNull()))
                 .from(reservation)
                 .leftJoin(review).on(reservation.eq(review.reservation))
                 .innerJoin(reservation.car.branch, branch)
@@ -127,7 +156,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .where(reservation.user.eq(queryFactory
                                 .selectFrom(user)
                                 .where(user.username.eq(username)).fetchOne())
-                        .and(reservation.startDate.gt(LocalDateTime.now())))
+                        .and(reservation.endDate.gt(LocalDateTime.now())))
                 .limit(1);
     }
 }

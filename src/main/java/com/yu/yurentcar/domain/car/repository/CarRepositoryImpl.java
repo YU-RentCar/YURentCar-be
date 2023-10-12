@@ -36,14 +36,16 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                 ))
                 .from(car)
                 .innerJoin(car.carSpec, carSpec);
-        if(!requestDto.getCarSizes().isEmpty())
+        if (!requestDto.getCarSizes().isEmpty())
             query.where(carSpec.carSize.in(requestDto.getCarSizes()));
-        if(!requestDto.getOilTypes().isEmpty())
-                query.where(carSpec.oilType.in(requestDto.getOilTypes()));
-        if(!requestDto.getTransmissions().isEmpty())
-                query.where(carSpec.transmission.in(requestDto.getTransmissions()));
+        if (!requestDto.getOilTypes().isEmpty())
+            query.where(carSpec.oilType.in(requestDto.getOilTypes()));
+        if (!requestDto.getTransmissions().isEmpty())
+            query.where(carSpec.transmission.in(requestDto.getTransmissions()));
         return query.where(carSpec.maxPassenger.gt(requestDto.getMinCount()))
-                .where(car.carId.notIn(isCarUsable(requestDto.getSiDo(), requestDto.getBranchName(), requestDto.getStartDate(), requestDto.getEndDate())))
+                .where(car.branch.siDo.eq(requestDto.getSiDo())
+                        .and(car.branch.branchName.eq(requestDto.getBranchName())
+                                .and(car.carId.notIn(isCarUsable(requestDto.getSiDo(), requestDto.getBranchName(), requestDto.getStartDate(), requestDto.getEndDate())))))
                 .orderBy(carSpec.carName.asc())
                 .fetch();
     }
@@ -65,18 +67,16 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 
     public BooleanExpression getUsableDateFilter(LocalDateTime startTime, LocalDateTime endTime) {
         LocalDateTime startOffset, endOffset;
-        if(startTime.getHour() < 12) {
+        if (startTime.getHour() < 12) {
             startOffset = startTime.minusDays(1);
             startOffset = LocalDateTime.of(startOffset.getYear(), startOffset.getMonth(), startOffset.getDayOfMonth(), 12, 0);
-        }
-        else {
+        } else {
             startOffset = LocalDateTime.of(startTime.getYear(), startTime.getMonth(), startTime.getDayOfMonth(), 0, 0);
         }
-        if(endTime.getHour() < 12) {
+        if (endTime.getHour() < 12) {
             endOffset = endTime.plusDays(1);
             endOffset = LocalDateTime.of(endOffset.getYear(), endOffset.getMonth(), endOffset.getDayOfMonth(), 12, 0);
-        }
-        else {
+        } else {
             endOffset = endTime.plusDays(2);
             endOffset = LocalDateTime.of(endOffset.getYear(), endOffset.getMonth(), endOffset.getDayOfMonth(), 0, 0);
         }
@@ -88,12 +88,12 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
     @Override
     public CarDetailsResponseDto findCarDetailsByCarNumber(String carNumber) {
         return queryFactory.select(Projections.constructor(CarDetailsResponseDto.class,
-                carSpec.carName,
-                car.carNumber,
-                carSpec.carSize,
-                carSpec.oilType,
-                carSpec.transmission,
-                carSpec.maxPassenger
+                        carSpec.carName,
+                        car.carNumber,
+                        carSpec.carSize,
+                        carSpec.oilType,
+                        carSpec.transmission,
+                        carSpec.maxPassenger
                 ))
                 .from(car)
                 .innerJoin(car.carSpec, carSpec)
@@ -104,7 +104,7 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
     @Override
     public CarResponseDto findCarResponseDtoByCarNumber(String carNumber) {
         return queryFactory
-                .select(Projections.constructor(CarResponseDto.class,car.carSpec.carName,car.carNumber,car.totalDistance))
+                .select(Projections.constructor(CarResponseDto.class, car.carSpec.carName, car.carNumber, car.totalDistance))
                 .from(car)
                 .where(car.carNumber.eq(carNumber))
                 .fetchFirst();
@@ -113,30 +113,31 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
     @Override
     public CarSpecDto findCarSpecByCarNumber(String carNumber) {
         return queryFactory
-                .select(Projections.constructor(CarSpecDto.class,carSpec.oilType,carSpec.releaseDate,car.createdAt,carSpec.maxPassenger,carSpec.transmission,carSpec.carBrand,carSpec.isKorean))
+                .select(Projections.constructor(CarSpecDto.class, carSpec.oilType, carSpec.releaseDate, car.createdAt, carSpec.maxPassenger, carSpec.transmission, carSpec.carBrand, carSpec.isKorean))
                 .from(car)
-                .innerJoin(car.carSpec,carSpec)
+                .innerJoin(car.carSpec, carSpec)
                 .where(car.carNumber.eq(carNumber))
                 .fetchFirst();
     }
 
-    @Override
-    public List<String> findAccidentListByCarNumber(String carNumber) {
-        return queryFactory
-                .select(car.accidentList)
-                .from(car)
-                .where(car.carNumber.eq(carNumber))
-                .fetchFirst();
-    }
-
-    @Override
-    public List<String> findRepairListByCarNumber(String carNumber) {
-        return queryFactory
-                .select(car.repairList)
-                .from(car)
-                .where(car.carNumber.eq(carNumber))
-                .fetchFirst();
-    }
+    //Table 수정으로 이동
+//    @Override
+//    public List<String> findAccidentListByCarNumber(String carNumber) {
+//        return queryFactory
+//                .select(car.accidentList)
+//                .from(car)
+//                .where(car.carNumber.eq(carNumber))
+//                .fetchFirst();
+//    }
+//
+//    @Override
+//    public List<String> findRepairListByCarNumber(String carNumber) {
+//        return queryFactory
+//                .select(car.repairList)
+//                .from(car)
+//                .where(car.carNumber.eq(carNumber))
+//                .fetchFirst();
+//    }
 
     @Override
     public Boolean usableByCarNumberAndDate(String carNumber, LocalDateTime startTime, LocalDateTime endTime) {
@@ -151,7 +152,7 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
     @Override
     public List<CarResponseDto> findCarsByCarNumbers(String[] carNumber) {
         return queryFactory
-                .select(Projections.constructor(CarResponseDto.class,car.carSpec.carName,car.carNumber,car.totalDistance))
+                .select(Projections.constructor(CarResponseDto.class, car.carSpec.carName, car.carNumber, car.totalDistance))
                 .from(car)
                 .where(car.carNumber.in(carNumber))
                 .fetch();
