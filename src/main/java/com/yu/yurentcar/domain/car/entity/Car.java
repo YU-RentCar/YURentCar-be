@@ -12,12 +12,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 @Table(name = "car")
 public class Car extends BaseTimeEntity {
     @Id
@@ -76,14 +78,22 @@ public class Car extends BaseTimeEntity {
 //    @Column(name = "accident_list", columnDefinition = "text[]")
 //    private List<String> accidentList;
     public Car updateCar(CarRequestDto carRequestDto, CarSpecification carSpecification, Branch branch) {
-        this.carSpec = carSpecification;
-        this.branch = branch;
-        this.carNumber = carRequestDto.getCarNumber();
-        this.totalDistance = carRequestDto.getTotalDistance();
-        this.carPrice = carRequestDto.getCarPrice();
-        this.discountRate = carRequestDto.getDiscountRate();
-        this.discountReason = carRequestDto.getDiscountReason();
-        this.carDescription = carRequestDto.getCarDescription();
+        if (carSpec != null)
+            this.carSpec = carSpecification;
+        if (branch != null)
+            this.branch = branch;
+        if (carNumber != null)
+            this.carNumber = carRequestDto.getCarNumber();
+        if (totalDistance != null)
+            this.totalDistance = carRequestDto.getTotalDistance();
+        if (carPrice != null)
+            this.carPrice = carRequestDto.getCarPrice();
+        if (discountRate != null)
+            this.discountRate = carRequestDto.getDiscountRate();
+        if (discountReason != null)
+            this.discountReason = carRequestDto.getDiscountReason();
+        if (carDescription != null)
+            this.carDescription = carRequestDto.getCarDescription();
         return this;
     }
 }

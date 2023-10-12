@@ -38,6 +38,6 @@ public class CarRequestDto {
     private String carBrand;
     @NotNull(message = "차량 출시일이 비었습니다.")
     private LocalDateTime releaseDate;
-    private List<CarEventDto> repairList;
-    private List<CarEventDto> accidentList;
+    private List<CarRepairEventDto> repairList;
+    private List<CarAccidentEventDto> accidentList;
 }
