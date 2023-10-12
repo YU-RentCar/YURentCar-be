@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.reservation.service;
 
+import com.yu.yurentcar.domain.car.dto.CarEventResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
 import com.yu.yurentcar.domain.car.repository.CarRepository;
@@ -27,12 +28,12 @@ public class ReservationService {
     private final PointService pointService;
 
     @Transactional(readOnly = true)
-    public List<String> getAccidentListByUsername(String username){
+    public List<CarEventResponseDto> getAccidentListByUsername(String username){
         return reservationRepository.getAccidentListByUsername(username);
     }
 
     @Transactional(readOnly = true)
-    public List<String> getRepairListByUsername(String username){
+    public List<CarEventResponseDto> getRepairListByUsername(String username){
         return reservationRepository.getRepairListByUsername(username);
     }
 
@@ -58,7 +59,9 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationDetailDto getNowReservationDetailByUsername(String username) {
-        return reservationRepository.findNowReservationDetailByUsername(username);
+        ReservationDetailDto reservationDetailDto =  reservationRepository.findNowReservationDetailByUsername(username);
+        reservationDetailDto.updateDrivers(reservationRepository.findNowReservationDriversByUsername(username));
+        return reservationDetailDto;
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +74,7 @@ public class ReservationService {
         if(!carRepository.usableByCarNumberAndDate(requestDto.getCarNumber(), requestDto.getStartDate(), requestDto.getEndDate()))
             throw new RuntimeException("이미 예약이 있습니다.");
 
-        Reservation reservation = reservationRepository.save(
+        Reservation reservation = reservationRepository.saveAndFlush(
                 Reservation.builder()
                         .reservationPrice(requestDto.getPrice())
                         .startDate(requestDto.getStartDate())
