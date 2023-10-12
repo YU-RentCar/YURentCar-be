@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.user.controller;
 
+import com.yu.yurentcar.domain.car.dto.CarEventResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationDetailDto;
@@ -78,12 +79,12 @@ public class UserController {
     }
 
     @GetMapping(value="/reservations/accidents")
-    public ResponseEntity<List<String>> getAccidentListByUsername(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth){
+    public ResponseEntity<List<CarEventResponseDto>> getAccidentListByUsername(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth){
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.getAccidentListByUsername(auth.getUsername()));
     }
 
     @GetMapping(value="/reservations/repairs")
-    public ResponseEntity<List<String>> getRepairListByUsername(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth){
+    public ResponseEntity<List<CarEventResponseDto>> getRepairListByUsername(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth){
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.getRepairListByUsername(auth.getUsername()));
     }
 

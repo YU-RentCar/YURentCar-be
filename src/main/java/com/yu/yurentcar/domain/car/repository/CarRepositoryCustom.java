@@ -10,8 +10,9 @@ public interface CarRepositoryCustom {
     CarDetailsResponseDto findCarDetailsByCarNumber(String carNumber);
     CarResponseDto findCarResponseDtoByCarNumber(String carNumber);
     CarSpecDto findCarSpecByCarNumber(String carNumber);
-    List<String> findAccidentListByCarNumber(String carNumber);
-    List<String> findRepairListByCarNumber(String carNumber);
+    //Table 수정으로 이동
+//    List<String> findAccidentListByCarNumber(String carNumber);
+//    List<String> findRepairListByCarNumber(String carNumber);
     Boolean usableByCarNumberAndDate(String carNumber, LocalDateTime startTime, LocalDateTime endTime);
     List<CarResponseDto> findCarsByCarNumbers(String[] carNumber);
 }

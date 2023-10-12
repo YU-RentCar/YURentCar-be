@@ -1,21 +1,25 @@
 package com.yu.yurentcar.domain.car.entity;
 
 import com.yu.yurentcar.domain.branch.entity.Branch;
+import com.yu.yurentcar.domain.car.dto.CarRequestDto;
 import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 @Table(name = "car")
 public class Car extends BaseTimeEntity {
     @Id
@@ -47,11 +51,49 @@ public class Car extends BaseTimeEntity {
     @Column(name = "car_state", length = 10)
     private CarState carState;
 
-    //에러 표기되지만 실제 동작에는 문제 없음
-    @Column(name = "repair_list", columnDefinition = "text[]")
-    private List<String> repairList;
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "car_price")
+    private Integer carPrice;
 
-    //에러 표기되지만 실제 동작에는 문제 없음
-    @Column(name = "accident_list", columnDefinition = "text[]")
-    private List<String> accidentList;
+    @NotNull
+    @Max(value = 100)
+    @Min(value = 0)
+    @Column(name = "discount_rate")
+    private Integer discountRate;
+
+    @Column(name = "discount_reason")
+    private String discountReason;
+
+    @NotNull
+    @Column(name = "car_description")
+    private String carDescription;
+
+
+    //    //에러 표기되지만 실제 동작에는 문제 없음
+//    @Column(name = "repair_list", columnDefinition = "text[]")
+//    private List<String> repairList;
+//
+//    //에러 표기되지만 실제 동작에는 문제 없음
+//    @Column(name = "accident_list", columnDefinition = "text[]")
+//    private List<String> accidentList;
+    public Car updateCar(CarRequestDto carRequestDto, CarSpecification carSpecification, Branch branch) {
+        if (carSpec != null)
+            this.carSpec = carSpecification;
+        if (branch != null)
+            this.branch = branch;
+        if (carNumber != null)
+            this.carNumber = carRequestDto.getCarNumber();
+        if (totalDistance != null)
+            this.totalDistance = carRequestDto.getTotalDistance();
+        if (carPrice != null)
+            this.carPrice = carRequestDto.getCarPrice();
+        if (discountRate != null)
+            this.discountRate = carRequestDto.getDiscountRate();
+        if (discountReason != null)
+            this.discountReason = carRequestDto.getDiscountReason();
+        if (carDescription != null)
+            this.carDescription = carRequestDto.getCarDescription();
+        return this;
+    }
 }
