@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.yu.yurentcar.domain.car.entity.QCar.car;
 import static com.yu.yurentcar.domain.car.entity.QCarEvent.carEvent;
 
 @Log4j2
@@ -24,9 +23,8 @@ public class CarEventRepositoryImpl implements CarEventRepositoryCustom {
                         carEvent.title,
                         carEvent.eventDate,
                         carEvent.content))
-                .from(car)
-                .innerJoin(car, carEvent.car)
-                .where(car.carNumber.eq(carNumber).and(carEvent.isRepair.isTrue()))
+                .from(carEvent)
+                .where(carEvent.car.carNumber.eq(carNumber).and(carEvent.isRepair.isTrue()))
                 .orderBy(carEvent.eventDate.asc())
                 .fetch();
     }
@@ -37,9 +35,8 @@ public class CarEventRepositoryImpl implements CarEventRepositoryCustom {
                         carEvent.title,
                         carEvent.eventDate,
                         carEvent.content))
-                .from(car)
-                .innerJoin(car, carEvent.car)
-                .where(car.carNumber.eq(carNumber).and(carEvent.isRepair.isFalse()))
+                .from(carEvent)
+                .where(carEvent.car.carNumber.eq(carNumber).and(carEvent.isRepair.isFalse()))
                 .orderBy(carEvent.eventDate.asc())
                 .fetch();
     }
