@@ -1,6 +1,7 @@
 package com.yu.yurentcar.domain.reservation.service;
 
 import com.yu.yurentcar.domain.reservation.dto.ReviewDto;
+import com.yu.yurentcar.domain.reservation.dto.ReviewResponseDto;
 import com.yu.yurentcar.domain.reservation.entity.Point;
 import com.yu.yurentcar.domain.reservation.entity.PointType;
 import com.yu.yurentcar.domain.reservation.entity.Reservation;
@@ -57,5 +58,24 @@ public class ReviewService {
         //유저 포인트 업데이트
         userRepository.save(reservation.get().getUser().updatePoint(reviewPoint));
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    public ReviewResponseDto getReviewByReservationIdWithWriter(long reservationId, String username) {
+        boolean isWriter = reservationRepository.existsByReservationIdAndUser_Username(reservationId, username);
+        log.info("writer: " + isWriter);
+        if(!isWriter)
+            throw new RuntimeException("작성자가 본인이 아닙니다.");
+
+        return getReviewByReservationId(reservationId);
+    }
+
+    @Transactional(readOnly = true)
+    public ReviewResponseDto getReviewByReservationId(long reservationId) {
+        ReviewResponseDto reviewResponseDto = reviewRepository.findReviewByReservationId(reservationId);
+        if(reviewResponseDto == null)
+            throw new RuntimeException("해당 예약에서 작성된 리뷰가 없습니다.");
+
+        return reviewResponseDto;
     }
 }
