@@ -88,12 +88,21 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
     @Override
     public CarDetailsResponseDto findCarDetailsByCarNumber(String carNumber) {
         return queryFactory.select(Projections.constructor(CarDetailsResponseDto.class,
+                        car.carDescription,
+                        car.totalDistance,
+                        carSpec.releaseDate,
+                        car.createdAt,
+                        car.carPrice,
+                        car.discountRate,
+                        car.discountReason,
                         carSpec.carName,
                         car.carNumber,
                         carSpec.carSize,
                         carSpec.oilType,
                         carSpec.transmission,
-                        carSpec.maxPassenger
+                        carSpec.maxPassenger,
+                        carSpec.carBrand,
+                        carSpec.isKorean
                 ))
                 .from(car)
                 .innerJoin(car.carSpec, carSpec)

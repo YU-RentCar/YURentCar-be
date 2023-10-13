@@ -13,5 +13,4 @@ public class CarEventDto {
     private LocalDateTime eventDate;
     private String content;
     private Boolean isRepair;
-
 }
