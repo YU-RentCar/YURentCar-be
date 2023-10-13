@@ -26,4 +26,9 @@ public class AdminService {
             throw new RuntimeException("입력하신 패스워드가 틀렸습니다.");
         return true;
     }
+
+    @Transactional(readOnly = true)
+    public Boolean validAdminByUsername(String username) {
+        return adminRepository.existsByUsername(username);
+    }
 }
