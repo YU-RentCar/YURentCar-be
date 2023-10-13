@@ -52,6 +52,7 @@ public class ReviewService {
         pointRepository.save(Point.builder()
                 .price(reviewPoint)
                 .type(PointType.REVIEW)
+                .reason(reviewDto.getReason())
                 .reviewId(savedReview)
                 .userId(reservation.get().getUser())
                 .build());
