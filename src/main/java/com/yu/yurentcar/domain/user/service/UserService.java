@@ -81,6 +81,7 @@ public class UserService {
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .phoneNumber(user.getPhoneNumber())
+                .birthdate(user.getBirthday())
                 .build()).orElseThrow(() -> new RuntimeException("없는 유저 입니다."));
     }
 
