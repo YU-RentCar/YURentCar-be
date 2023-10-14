@@ -32,7 +32,9 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
         JPAQuery<UsableCarResponseDto> query = queryFactory.select(Projections.constructor(UsableCarResponseDto.class,
                         carSpec.carName,
                         car.carNumber,
-                        car.totalDistance
+                        car.totalDistance,
+                        car.carPrice,
+                        car.discountRate
                 ))
                 .from(car)
                 .innerJoin(car.carSpec, carSpec);
