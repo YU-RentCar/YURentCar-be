@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Log4j2
 public class ReservationListResponseDto {
     private Long reservationId;
-    //private String photoUrl;
     private String carName;
     private String carNumber;
     private Integer totalDistance;
@@ -24,6 +23,8 @@ public class ReservationListResponseDto {
     private String branchName;
     private Integer price;
     private int reviewType;
+    private String photoUrl;
+
 
     public ReservationListResponseDto(Long reservationId, String carName, String carNumber, Integer totalDistance, LocalDateTime startDate, LocalDateTime endDate, String branchName, Integer price, Boolean isWritten) {
         this.reservationId = reservationId;
@@ -46,5 +47,7 @@ public class ReservationListResponseDto {
             this.reviewType = ReviewType.POSSIBLE_NO_POINT.getDbValue();
         else
             this.reviewType = ReviewType.IMPOSSIBLE.getDbValue();
+
+        this.photoUrl="http://";
     }
 }
