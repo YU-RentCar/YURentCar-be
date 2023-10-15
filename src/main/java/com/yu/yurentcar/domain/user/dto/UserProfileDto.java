@@ -13,12 +13,14 @@ public class UserProfileDto {
     private String name;
     private String nickname;
     private String phoneNumber;
+    private LocalDateTime birthdate;
 
     @Builder
-    public UserProfileDto(String username, String name, String nickname, String phoneNumber) {
+    public UserProfileDto(String username, String name, String nickname, String phoneNumber, LocalDateTime birthdate ) {
         this.username = username;
         this.name = name;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
+        this.birthdate = birthdate;
     }
 }

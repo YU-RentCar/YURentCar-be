@@ -15,6 +15,8 @@ public class ReservationDetailDto {
     private String carName;
     private String carNumber;
     private List<String> drivers;
+    private String photoUrl;
+
     @Builder
     public ReservationDetailDto(LocalDateTime startDate, LocalDateTime endDate, String branchName, String carName, String carNumber) {
         this.startDate = startDate;
@@ -23,6 +25,7 @@ public class ReservationDetailDto {
         this.carName = carName;
         this.carNumber = carNumber;
         this.drivers = null;
+        this.photoUrl = "http://";
     }
 
     public ReservationDetailDto updateDrivers(List<String> drivers) {

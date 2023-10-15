@@ -30,7 +30,7 @@ public class CarDetailsResponseDto {
     private final Integer discountRate;
     private final String discountReason;
     private final String carBrand;
-    private final String isKorean;
+    private final Boolean isKorean;
     public CarDetailsResponseDto(String carDescription, Integer totalDistance, LocalDateTime releaseDate, LocalDateTime createdAt, Integer carPrice, Integer discountRate, String discountReason, String carName, String carNumber, CarSize carSize, OilType oilType, Transmission transmission, Integer maxPassenger, CarBrand carBrand, Boolean isKorean) {
         this.carDescription = carDescription;
         this.totalDistance = totalDistance;
@@ -48,7 +48,7 @@ public class CarDetailsResponseDto {
         this.maxPassenger = maxPassenger;
         this.imageUri = "http://";
         this.carBrand= carBrand.getDesc();
-        this.isKorean = isKorean ? "국산" : "외제";
+        this.isKorean = isKorean;
     }
 
 }
