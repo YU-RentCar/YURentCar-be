@@ -5,6 +5,7 @@ import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "parking_spot")
 public class ParkingSpot extends BaseTimeEntity {
     @Id
@@ -28,8 +30,9 @@ public class ParkingSpot extends BaseTimeEntity {
     private Car car;
 
     @NotNull
-    @Column(name="is_parking")
-    private Boolean isParking;
+    @Column(name = "type",length = 30)
+    @Enumerated(EnumType.STRING)
+    private ParkingSpotType type;
 
     @NotNull
     @Column
