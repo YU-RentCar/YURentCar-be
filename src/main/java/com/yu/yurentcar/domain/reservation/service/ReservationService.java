@@ -6,12 +6,11 @@ import com.yu.yurentcar.domain.car.dto.CarSpecDto;
 import com.yu.yurentcar.domain.car.repository.CarRepository;
 import com.yu.yurentcar.domain.reservation.dto.*;
 import com.yu.yurentcar.domain.reservation.entity.*;
-import com.yu.yurentcar.domain.reservation.repository.CardRepository;
-import com.yu.yurentcar.domain.reservation.repository.DriverRepository;
-import com.yu.yurentcar.domain.reservation.repository.PayRepository;
-import com.yu.yurentcar.domain.reservation.repository.ReservationRepository;
+import com.yu.yurentcar.domain.reservation.repository.*;
+import com.yu.yurentcar.domain.user.entity.Admin;
 import com.yu.yurentcar.domain.user.entity.DriverLicense;
 import com.yu.yurentcar.domain.user.entity.User;
+import com.yu.yurentcar.domain.user.repository.AdminRepository;
 import com.yu.yurentcar.domain.user.repository.UserRepository;
 import com.yu.yurentcar.global.utils.MailUtils;
 import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
@@ -29,6 +28,8 @@ import java.util.Optional;
 @Service
 @Log4j2
 public class ReservationService {
+    private final PointRepository pointRepository;
+    private final AdminRepository adminRepository;
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final CarRepository carRepository;
@@ -143,5 +144,52 @@ public class ReservationService {
         String message = mailUtils.makeMessageFromReservation(reservation);
         mailUtils.sendMail(username, "YU렌트카 예약 완료", message);
         return reservation.getReservationId();
+    }
+
+//    @Transactional
+//    public Boolean patchReservation(ReservationRequestDto requestDto, String adminUsername){
+//        return true;
+//    }
+
+    @Transactional
+    public Boolean deleteReservation(Long reservationId, String adminUsername, String username) {
+        Optional<Admin> lookupAdmin;
+        Optional<Reservation> lookupReservation;
+        Optional<User> lookupUser;
+        if (adminUsername != null) {// 관리자가 예약 취소하는 경우
+            lookupAdmin = adminRepository.findByUsername(adminUsername);
+            if (lookupAdmin.isEmpty()) throw new RuntimeException("없는 관리자입니다.");
+            lookupReservation = reservationRepository.findById(reservationId);
+            if (lookupReservation.isEmpty()) throw new RuntimeException("없는 예약입니다");
+            if(!lookupReservation.get().getCar().getBranch().equals(lookupAdmin.get().getBranch())){
+                throw new RuntimeException("취소하려는 예약의 지점과 다른 지점 관리자입니다. 권한이 없습니다.");
+            }
+            lookupUser = Optional.of(lookupReservation.get().getUser());
+        } else {//사용자가 예약 취소하는 경우
+            lookupUser = userRepository.findByUsername(username);
+            if (lookupUser.isEmpty()) throw new RuntimeException("없는 사용자입니다.");
+        }
+
+
+        // 결제 테이블 삭제
+        Optional<Pay> lookupPay = payRepository.findByReservationReservationId(reservationId);
+        if (lookupPay.isEmpty()) throw new RuntimeException("결제 내역이 없습니다.");
+        payRepository.delete(lookupPay.get());
+        Optional<com.yu.yurentcar.domain.reservation.entity.Point> lookupPoint = pointRepository.findByPayId(lookupPay.get());
+        if (lookupPoint.isEmpty()) {
+            log.info("결제할 때 포인트를 사용하지 않았습니다.");
+        } else {
+            // 포인트 테이블 삭제
+            pointRepository.delete(lookupPoint.get());
+            // 사용자 보유포인트 갱신
+            userRepository.save(lookupUser.get().updatePoint(Math.abs(lookupPoint.get().getPrice())));
+        }
+        //드라이버들 삭제랑 예약 테이블 삭제하기
+        driverRepository.deleteAllDriversByReservationId(reservationId);
+        // insurance_contract 테이블 내역도 삭제 <- 추후 보험계약 구현시 추가
+        // reservation 테이블 내역 삭제
+        reservationRepository.deleteById(reservationId);
+
+        return true;
     }
 }
