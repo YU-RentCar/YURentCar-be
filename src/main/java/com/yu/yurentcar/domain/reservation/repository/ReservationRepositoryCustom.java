@@ -5,6 +5,7 @@ import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationDetailDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationListResponseDto;
+import com.yu.yurentcar.domain.reservation.entity.Reservation;
 import org.springframework.data.geo.Point;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface ReservationRepositoryCustom {
     List<String> findNowReservationDriversByUsername(String username);
 
     List<ReservationListResponseDto> getReservationListByUsername(String username);
+
+    Reservation findRecentReservationsByCarId(Long carId);
 }

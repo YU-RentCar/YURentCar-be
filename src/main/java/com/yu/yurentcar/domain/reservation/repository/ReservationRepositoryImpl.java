@@ -9,6 +9,7 @@ import com.yu.yurentcar.domain.car.dto.CarSpecDto;
 import com.yu.yurentcar.domain.car.entity.QCarSpecification;
 import com.yu.yurentcar.domain.reservation.dto.ReservationDetailDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationListResponseDto;
+import com.yu.yurentcar.domain.reservation.entity.Reservation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.geo.Point;
@@ -147,6 +148,15 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .where(reservation.endDate.before(LocalDateTime.now()))
                 .orderBy(reservation.endDate.desc())
                 .fetch();
+    }
+
+    @Override
+    public Reservation findRecentReservationsByCarId(Long carId) {
+        return queryFactory
+                .selectFrom(reservation)
+                .where(reservation.car.carId.eq(carId))
+                .orderBy(reservation.endDate.desc())
+                .fetchFirst();
     }
 
     private JPAQuery<?> findLatestReservationInfo(String username) {
