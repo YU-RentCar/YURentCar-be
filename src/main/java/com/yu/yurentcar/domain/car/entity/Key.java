@@ -5,12 +5,14 @@ import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "key")
+@DynamicUpdate
 @ToString
 public class Key extends BaseTimeEntity {
     @Id
