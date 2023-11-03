@@ -1,12 +1,11 @@
 package com.yu.yurentcar.domain.branch.controller;
 
+import com.yu.yurentcar.domain.branch.dto.KeyReturnDto;
 import com.yu.yurentcar.domain.branch.service.KioskService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Log4j2
 @RestController
@@ -25,8 +24,8 @@ public class KioskController {
     }
 
     @PostMapping("/return")
-    public ResponseEntity<Long> returnKey(@RequestBody Map<String, String> rfid, @RequestParam Long kioskId) {
-        log.info("returnKey = " + rfid);
-        return ResponseEntity.status(HttpStatus.OK).body(kioskService.returnKey(rfid.get("rfid"), kioskId));
+    public ResponseEntity<Long> returnKey(@RequestBody KeyReturnDto keyReturnDto) {
+        log.info("returnKey = " + keyReturnDto.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(kioskService.returnKey(keyReturnDto.getRfid(), keyReturnDto.getKioskId()));
     }
 }
