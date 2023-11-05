@@ -1,7 +1,9 @@
 package com.yu.yurentcar.domain.reservation.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -10,9 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationPatchRequestDto {
-    @JsonFormat(pattern = "yyyy. MM. dd. HH:mm")
     private LocalDateTime startDate;
-    @JsonFormat(pattern = "yyyy. MM. dd. HH:mm")
     private LocalDateTime endDate;
     private String carNumber;
 }
