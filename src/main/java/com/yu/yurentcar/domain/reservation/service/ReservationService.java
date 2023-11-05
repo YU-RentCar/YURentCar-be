@@ -150,9 +150,9 @@ public class ReservationService {
     @Transactional
     public Boolean patchReservation(Long reservationId, ReservationPatchRequestDto requestDto, String username) {
         Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new RuntimeException("해당 예약이 존재하지 않습니다."));
-        Admin admin = adminRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("해당 관리자는 존재하지 않습니다."));
-        if(!reservation.getCar().getBranch().equals(admin.getBranch()))
-            throw new RuntimeException("해당 지점의 예약이 아닙니다.");
+        boolean isReservationInAdminBranch = adminRepository.isReservationByAdminBranch(reservationId, username);
+        if (!isReservationInAdminBranch)
+            throw new RuntimeException("해당 관리자가 없거나 해당 관리자 지점의 예약이 아닙니다.");
         boolean usable = carRepository.updatableByCarNumberAndDate(reservationId, requestDto.getCarNumber(), requestDto.getStartDate(), requestDto.getEndDate());
         if (!usable)
             return false;
