@@ -69,6 +69,8 @@ public class Car extends BaseTimeEntity {
     @Column(name = "car_description")
     private String carDescription;
 
+    @Column(name = "photo_url", length = 200)
+    private String photoUrl;
 
     //    //에러 표기되지만 실제 동작에는 문제 없음
 //    @Column(name = "repair_list", columnDefinition = "text[]")
@@ -77,7 +79,7 @@ public class Car extends BaseTimeEntity {
 //    //에러 표기되지만 실제 동작에는 문제 없음
 //    @Column(name = "accident_list", columnDefinition = "text[]")
 //    private List<String> accidentList;
-    public Car updateCar(CarRequestDto carRequestDto, CarSpecification carSpecification, Branch branch) {
+    public Car updateCar(CarRequestDto carRequestDto, CarSpecification carSpecification, Branch branch,String photoUrl) {
         if (carSpec != null)
             this.carSpec = carSpecification;
         if (branch != null)
@@ -94,6 +96,8 @@ public class Car extends BaseTimeEntity {
             this.discountReason = carRequestDto.getDiscountReason();
         if (carDescription != null)
             this.carDescription = carRequestDto.getCarDescription();
+        if (photoUrl != null)
+            this.photoUrl = photoUrl;
         return this;
     }
 }

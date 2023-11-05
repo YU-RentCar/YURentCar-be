@@ -12,15 +12,17 @@ import com.yu.yurentcar.domain.user.entity.CarSize;
 import com.yu.yurentcar.domain.user.entity.OilType;
 import com.yu.yurentcar.domain.user.entity.Transmission;
 import com.yu.yurentcar.domain.user.repository.AdminRepository;
+import com.yu.yurentcar.global.utils.FileUploadUtil;
 import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -82,7 +84,7 @@ public class CarService {
     }
 
     @Transactional
-    public Long postCar(CarRequestDto carRequestDto, String adminUsername) {
+    public Long postCar(CarRequestDto carRequestDto, String adminUsername, MultipartFile file) throws IOException {
         Optional<Car> lookupCar = carRepository.findByCarNumber(carRequestDto.getCarNumber());
         Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
         if (lookupCar.isPresent()) throw new RuntimeException("이미 존재하는 차량입니다.");
@@ -116,6 +118,19 @@ public class CarService {
         }// 있는 경우 그대로 사용
         else carSpec = lookupCarSpec.get();
 
+        String projectPath;
+        String fileName = "";
+
+        if (file != null) {
+            //저장할 경로를 지정
+            projectPath = System.getProperty("user.dir") + "\\files";
+            //식별자
+            UUID uuid = UUID.randomUUID();
+            //랜덤식별자_원래파일이름 = 저장될 파일이름 지정
+            fileName = uuid + "_" + file.getOriginalFilename();
+            //파일 저장
+            FileUploadUtil.saveFile(projectPath, fileName, file);
+        }
         // 차량 등록
         Car car = carRepository.saveAndFlush(
                 Car.builder()
@@ -128,6 +143,8 @@ public class CarService {
                         .discountRate(carRequestDto.getDiscountRate())
                         .discountReason(carRequestDto.getDiscountReason())
                         .carDescription(carRequestDto.getCarDescription())
+                        /*저장되는 경로*/
+                        .photoUrl(file == null ? "" : fileName)
                         .build()
         );
 
@@ -162,7 +179,7 @@ public class CarService {
     }
 
     @Transactional
-    public Boolean patchCar(CarRequestDto carRequestDto,String adminUsername, Long carId) {
+    public Boolean patchCar(CarRequestDto carRequestDto, String adminUsername, Long carId, MultipartFile file) throws IOException {
         Optional<Car> lookupCar = carRepository.findById(carId);
         if (lookupCar.isEmpty()) throw new RuntimeException("없는 차량입니다.");
         Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
@@ -198,9 +215,36 @@ public class CarService {
             );
         } else carSpec = lookupCarSpec.get();
 
+        // 기존에 사진이 있는 경우 저장된 사진 삭제
+        File lookupFile;
+        if (!lookupCar.get().getPhotoUrl().equals("")) {
+            log.info("기존의 이미지를 지웁니다.");
+            log.info(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(lookupCar.get().getPhotoUrl()));
+            try {
+                lookupFile = new File(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(lookupCar.get().getPhotoUrl(), "UTF-8"));
+                lookupFile.delete();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        String projectPath;
+        String fileName = null;
+
+        if (file != null) {
+            //저장할 경로를 지정
+            projectPath = System.getProperty("user.dir") + "\\files";
+            //식별자
+            UUID uuid = UUID.randomUUID();
+            //랜덤식별자_원래파일이름 = 저장될 파일이름 지정
+            fileName = uuid + "_" + file.getOriginalFilename();
+            //파일 저장
+            FileUploadUtil.saveFile(projectPath, fileName, file);
+        }
+
         // 차량 변경
         Car car = carRepository.saveAndFlush(
-                lookupCar.get().updateCar(carRequestDto, carSpec, lookupBranch.get())
+                lookupCar.get().updateCar(carRequestDto, carSpec, lookupBranch.get(), fileName)
         );
 
         // 수리내역 삭제
@@ -246,6 +290,24 @@ public class CarService {
         //삭제하려는 관리자와 차량의 지점이 같은지 확인
         if (!lookupAdmin.get().getBranch().equals(lookupCar.get().getBranch()))
             throw new RuntimeException("다른 지점 관리자입니다. 권한이 없습니다.");
+
+        // 기존에 사진이 있는 경우 저장된 사진 삭제
+        File lookupFile;
+        if (!lookupCar.get().getPhotoUrl().equals("")) {
+            log.info("이미지를 지웁니다.");
+            log.info(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(lookupCar.get().getPhotoUrl()));
+            try {
+                lookupFile = new File(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(lookupCar.get().getPhotoUrl(), "UTF-8"));
+                lookupFile.delete();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // 수리내역 삭제
+        carEventRepository.deleteRepairListByCarId(lookupCar.get().getCarId());
+        // 사고내역 삭제
+        carEventRepository.deleteAccidentListByCarId(lookupCar.get().getCarId());
+        // 차량 삭제
         carRepository.delete(lookupCar.get());
 
         return true;

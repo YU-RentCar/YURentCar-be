@@ -7,7 +7,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Validated
@@ -59,17 +61,22 @@ public class CarController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> postCar(@RequestBody CarRequestDto carRequestDto, @RequestParam String adminUsername) {
-        return ResponseEntity.ok(carService.postCar(carRequestDto, adminUsername));
+    public ResponseEntity<Long> postCar(@RequestPart(value = "carRequest") @Valid CarRequestDto carRequestDto,
+                                        @RequestParam String adminUsername,
+                                        @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        return ResponseEntity.ok(carService.postCar(carRequestDto, adminUsername, file));
     }
 
     @PatchMapping
-    public ResponseEntity<Boolean> patchCar(@RequestBody @Valid CarRequestDto carRequestDto, @RequestParam String adminUsername, @RequestParam Long carId) {
-        return ResponseEntity.ok(carService.patchCar(carRequestDto, adminUsername, carId));
+    public ResponseEntity<Boolean> patchCar(@RequestPart(value = "carRequest") @Valid CarRequestDto carRequestDto,
+                                            @RequestParam String adminUsername,
+                                            @RequestParam Long carId,
+                                            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        return ResponseEntity.ok(carService.patchCar(carRequestDto, adminUsername, carId, file));
     }
 
     @DeleteMapping
     public ResponseEntity<Boolean> deleteCar(@RequestParam String adminUsername, @RequestParam String carNumber) {
-        return ResponseEntity.ok(carService.deleteCar( adminUsername, carNumber));
+        return ResponseEntity.ok(carService.deleteCar(adminUsername, carNumber));
     }
 }
