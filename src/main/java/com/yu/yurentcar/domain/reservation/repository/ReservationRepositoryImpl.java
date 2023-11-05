@@ -178,7 +178,9 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .select(Projections.constructor(ReservationBranchDto.class,
                         reservation.user.nickname,
                         reservation.reservationId,
-                        reservation.car.carNumber))
+                        reservation.car.carNumber,
+                        reservation.startDate,
+                        reservation.endDate))
                 .from(reservation)
                 .where(reservation.car.branch.branchId.eq(branchId));
         if (isDone != null) {

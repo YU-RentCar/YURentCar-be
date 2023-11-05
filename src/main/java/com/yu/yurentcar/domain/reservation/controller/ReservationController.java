@@ -1,6 +1,8 @@
 package com.yu.yurentcar.domain.reservation.controller;
 
 import com.yu.yurentcar.domain.reservation.dto.ReservationBranchDto;
+import com.yu.yurentcar.domain.reservation.dto.ReservationDatesDto;
+import com.yu.yurentcar.domain.reservation.dto.ReservationPatchRequestDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationRequestDto;
 import com.yu.yurentcar.domain.reservation.service.ReservationService;
 import com.yu.yurentcar.domain.user.dto.UserAuthDto;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Log4j2
 @RestController
@@ -40,15 +44,12 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.deleteReservation(reservationId, adminUsername, auth.getUsername()));
     }
 
-    @GetMapping("branch/{branchId}")
-    public ResponseEntity<List<ReservationBranchDto>> getReservationListByBranch(@PathVariable Long branchId, @RequestParam(required = false) String adminUsername, @RequestParam(required = false) Boolean isDone) {
-        log.info("get reservations by branchId / branchId:" + branchId + " admin: " + adminUsername + " isDone: " + isDone);
+    @GetMapping("branch")
+    public ResponseEntity<List<ReservationBranchDto>> getReservationListByBranch(@RequestParam String adminUsername, @RequestParam(required = false) Boolean isDone) {
+        log.info("get reservations by branchId / admin: " + adminUsername + " isDone: " + isDone);
 
         Admin admin = adminService.getAdminByUsername(adminUsername);
-        if(!admin.getBranch().getBranchId().equals(branchId))
-            throw new RuntimeException("해당 지점에 대한 권한이 없는 관리자입니다. branchId: " + branchId);
-
-        List<ReservationBranchDto> reservationDtolist = reservationService.getReservationListByBranch(branchId, isDone);
+        List<ReservationBranchDto> reservationDtolist = reservationService.getReservationListByBranch(admin.getBranch().getBranchId(), isDone);
 
         return ResponseEntity.ok(reservationDtolist);
     }
