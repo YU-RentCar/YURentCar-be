@@ -194,6 +194,28 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     }
 
     @Override
+    public ReservationBranchDto getReservationListByBranchIdAndNickname(Long branchId, String nickname, Boolean isDone) {
+        JPAQuery<ReservationBranchDto> query = queryFactory
+                .select(Projections.constructor(ReservationBranchDto.class,
+                        reservation.user.nickname,
+                        reservation.reservationId,
+                        reservation.car.carNumber,
+                        reservation.startDate,
+                        reservation.endDate))
+                .from(reservation)
+                .where(reservation.user.nickname.eq(nickname))
+                .where(reservation.car.branch.branchId.eq(branchId));
+        if (isDone != null) {
+            if(isDone)
+                query = query.where(reservation.endDate.before(LocalDateTime.now()));
+            else
+                query = query.where(reservation.endDate.after(LocalDateTime.now()));
+        }
+
+        return query.limit(1).fetchFirst();
+    }
+
+    @Override
     public ReservationDatesDto getReservationStartDateAndEndDateByReservationId(Long reservationId) {
         return queryFactory
                 .select(Projections.constructor(ReservationDatesDto.class,

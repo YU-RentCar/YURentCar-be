@@ -21,9 +21,11 @@ import java.util.List;
 @RequestMapping("api/v1/reservations")
 public class ReservationController {
     private final ReservationService reservationService;
+    private final AdminService adminService;
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(ReservationService reservationService, AdminService adminService) {
         this.reservationService = reservationService;
+        this.adminService = adminService;
     }
 
     @PostMapping
@@ -52,6 +54,16 @@ public class ReservationController {
         List<ReservationBranchDto> reservationDtolist = reservationService.getReservationListByBranch(admin.getBranch().getBranchId(), isDone);
 
         return ResponseEntity.ok(reservationDtolist);
+    }
+
+    @GetMapping("branch/nickname/{nickname}")
+    public ResponseEntity<ReservationBranchDto> getReservationListByBranchAndNickname(@PathVariable String nickname, @RequestParam String adminUsername, @RequestParam(required = false) Boolean isDone) {
+        log.info("get reservation by branchId and nickname / admin: " + adminUsername + " nickname: " + nickname + " isDone: " + isDone);
+
+        Admin admin = adminService.getAdminByUsername(adminUsername);
+        ReservationBranchDto reservationDto = reservationService.getReservationListByBranchAndNickname(admin.getBranch().getBranchId(), nickname, isDone);
+
+        return ResponseEntity.ok(reservationDto);
     }
 
     @GetMapping("{reservationId}/dates")

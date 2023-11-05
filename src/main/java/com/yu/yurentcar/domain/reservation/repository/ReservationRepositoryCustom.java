@@ -35,6 +35,7 @@ public interface ReservationRepositoryCustom {
     Reservation findRecentReservationsByCarId(Long carId);
 
     List<ReservationBranchDto> getReservationListByBranchId(Long branchId, Boolean isDone);
+    ReservationBranchDto getReservationListByBranchIdAndNickname(Long branchId, String nickname, Boolean isDone);
 
     ReservationDatesDto getReservationStartDateAndEndDateByReservationId(Long reservationId);
 }

@@ -199,6 +199,11 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
+    public ReservationBranchDto getReservationListByBranchAndNickname(Long branchId, String nickname, Boolean isDone) {
+        return reservationRepository.getReservationListByBranchIdAndNickname(branchId, nickname, isDone);
+    }
+
+    @Transactional(readOnly = true)
     public ReservationDatesDto getReservationStartEndTimes(Long reservationId) {
         return reservationRepository.getReservationStartDateAndEndDateByReservationId(reservationId);
     }
