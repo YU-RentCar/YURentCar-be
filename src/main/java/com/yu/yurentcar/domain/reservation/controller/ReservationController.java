@@ -52,4 +52,9 @@ public class ReservationController {
 
         return ResponseEntity.ok(reservationDtolist);
     }
+
+    @GetMapping("{reservationId}/dates")
+    public ResponseEntity<ReservationDatesDto> getReservationStartEndTimes(@PathVariable Long reservationId) {
+        return ResponseEntity.ok(reservationService.getReservationStartEndTimes(reservationId));
+    }
 }

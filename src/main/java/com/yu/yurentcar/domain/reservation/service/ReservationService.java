@@ -161,7 +161,7 @@ public class ReservationService {
             if (lookupAdmin.isEmpty()) throw new RuntimeException("없는 관리자입니다.");
             lookupReservation = reservationRepository.findById(reservationId);
             if (lookupReservation.isEmpty()) throw new RuntimeException("없는 예약입니다");
-            if(!lookupReservation.get().getCar().getBranch().equals(lookupAdmin.get().getBranch())){
+            if (!lookupReservation.get().getCar().getBranch().equals(lookupAdmin.get().getBranch())) {
                 throw new RuntimeException("취소하려는 예약의 지점과 다른 지점 관리자입니다. 권한이 없습니다.");
             }
             lookupUser = Optional.of(lookupReservation.get().getUser());
@@ -196,5 +196,10 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public List<ReservationBranchDto> getReservationListByBranch(Long branchId, Boolean isDone) {
         return reservationRepository.getReservationListByBranchId(branchId, isDone);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationDatesDto getReservationStartEndTimes(Long reservationId) {
+        return reservationRepository.getReservationStartDateAndEndDateByReservationId(reservationId);
     }
 }

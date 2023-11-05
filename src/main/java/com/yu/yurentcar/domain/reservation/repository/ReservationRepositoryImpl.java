@@ -8,6 +8,7 @@ import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
 import com.yu.yurentcar.domain.car.entity.QCarSpecification;
 import com.yu.yurentcar.domain.reservation.dto.ReservationBranchDto;
+import com.yu.yurentcar.domain.reservation.dto.ReservationDatesDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationDetailDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationListResponseDto;
 import com.yu.yurentcar.domain.reservation.entity.Reservation;
@@ -188,5 +189,17 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
         }
 
         return query.fetch();
+    }
+
+    @Override
+    public ReservationDatesDto getReservationStartDateAndEndDateByReservationId(Long reservationId) {
+        return queryFactory
+                .select(Projections.constructor(ReservationDatesDto.class,
+                        reservation.startDate,
+                        reservation.endDate))
+                .from(reservation)
+                .where(reservation.reservationId.eq(reservationId))
+                .limit(1)
+                .fetchFirst();
     }
 }
