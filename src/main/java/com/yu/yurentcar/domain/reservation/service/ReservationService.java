@@ -192,4 +192,9 @@ public class ReservationService {
 
         return true;
     }
+
+    @Transactional(readOnly = true)
+    public List<ReservationBranchDto> getReservationListByBranch(Long branchId, Boolean isDone) {
+        return reservationRepository.getReservationListByBranchId(branchId, isDone);
+    }
 }
