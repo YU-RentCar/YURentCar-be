@@ -3,15 +3,11 @@ package com.yu.yurentcar.domain.reservation.entity;
 import com.yu.yurentcar.global.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "pay")
 @ToString
 public class Pay extends BaseTimeEntity {
@@ -36,4 +32,10 @@ public class Pay extends BaseTimeEntity {
     @Column(name = "pay_price")
     private Integer payPrice;
 
+    @Builder
+    public Pay(@NotNull Card card, @NotNull Reservation reservation, @NotNull Integer payPrice) {
+        this.card = card;
+        this.reservation = reservation;
+        this.payPrice = payPrice;
+    }
 }
