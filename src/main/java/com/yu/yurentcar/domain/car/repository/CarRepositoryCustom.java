@@ -14,6 +14,7 @@ public interface CarRepositoryCustom {
 //    List<String> findAccidentListByCarNumber(String carNumber);
 //    List<String> findRepairListByCarNumber(String carNumber);
     Boolean usableByCarNumberAndDate(String carNumber, LocalDateTime startTime, LocalDateTime endTime);
+    Boolean updatableByCarNumberAndDate(Long reservationId, String carNumber, LocalDateTime startTime, LocalDateTime endTime);
     List<CarResponseDto> findCarsByCarNumbers(String[] carNumber);
     List<CarManagementDto> findCarsByAdmin(String adminUsername);
 }

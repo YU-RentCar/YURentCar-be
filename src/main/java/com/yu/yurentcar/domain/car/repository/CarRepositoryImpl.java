@@ -153,6 +153,17 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
 //    }
 
     @Override
+    public Boolean updatableByCarNumberAndDate(Long reservationId, String carNumber, LocalDateTime startTime, LocalDateTime endTime) {
+        return queryFactory.selectDistinct(reservation.car.carId)
+                .from(reservation)
+                .innerJoin(reservation.car, car)
+                .where(car.carNumber.eq(carNumber))
+                .where(reservation.reservationId.ne(reservationId))
+                .where(getUsableDateFilter(startTime, endTime))
+                .limit(1).fetch().isEmpty();
+    }
+
+    @Override
     public Boolean usableByCarNumberAndDate(String carNumber, LocalDateTime startTime, LocalDateTime endTime) {
         return queryFactory.selectDistinct(reservation.car.carId)
                 .from(reservation)

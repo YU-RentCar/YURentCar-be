@@ -34,11 +34,11 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.makeReservation(requestDto, auth.getUsername()));
     }
 
-//    @PatchMapping
-//    public ResponseEntity<Boolean> patchReservation(@RequestBody ReservationRequestDto requestDto, @RequestParam String adminUsername) {
-//        log.info("patchReservation : " + requestDto);
-//        return ResponseEntity.status(HttpStatus.OK).body(reservationService.patchReservation(requestDto, adminUsername));
-//    }
+    @PatchMapping("{reservationId}")
+    public ResponseEntity<Boolean> patchReservation(@RequestBody ReservationPatchRequestDto requestDto, @PathVariable Long reservationId, @RequestParam String adminUsername) {
+        log.info("patchReservation : " + requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.patchReservation(reservationId, requestDto, adminUsername));
+    }
 
     @DeleteMapping
     public ResponseEntity<Boolean> deleteReservation(@RequestParam Long reservationId, @RequestParam(required = false) String adminUsername, @CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth) {

@@ -3,6 +3,7 @@ package com.yu.yurentcar.domain.reservation.service;
 import com.yu.yurentcar.domain.car.dto.CarEventResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
+import com.yu.yurentcar.domain.car.entity.Car;
 import com.yu.yurentcar.domain.car.repository.CarRepository;
 import com.yu.yurentcar.domain.reservation.dto.*;
 import com.yu.yurentcar.domain.reservation.entity.*;
@@ -146,10 +147,21 @@ public class ReservationService {
         return reservation.getReservationId();
     }
 
-//    @Transactional
-//    public Boolean patchReservation(ReservationRequestDto requestDto, String adminUsername){
-//        return true;
-//    }
+    @Transactional
+    public Boolean patchReservation(Long reservationId, ReservationPatchRequestDto requestDto, String username) {
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new RuntimeException("해당 예약이 존재하지 않습니다."));
+        Admin admin = adminRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("해당 관리자는 존재하지 않습니다."));
+        if(!reservation.getCar().getBranch().equals(admin.getBranch()))
+            throw new RuntimeException("해당 지점의 예약이 아닙니다.");
+        boolean usable = carRepository.updatableByCarNumberAndDate(reservationId, requestDto.getCarNumber(), requestDto.getStartDate(), requestDto.getEndDate());
+        if (!usable)
+            return false;
+
+        Car updatedCar = carRepository.findByCarNumber(requestDto.getCarNumber()).orElseThrow(() -> new RuntimeException("존재하지 않는 차량입니다."));
+        reservationRepository.save(reservation.updateReservation(updatedCar, null, requestDto.getStartDate(), requestDto.getEndDate(), null));
+
+        return true;
+    }
 
     @Transactional
     public Boolean deleteReservation(Long reservationId, String adminUsername, String username) {
