@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.yu.yurentcar.domain.branch.entity.QBranch.branch;
+import static com.yu.yurentcar.domain.user.entity.QAdmin.admin;
 
 @RequiredArgsConstructor
 @Repository
@@ -41,5 +42,13 @@ public class BranchRepositoryImpl implements BranchRepositoryCustom {
         return queryFactory.selectFrom(branch)
                 .where(branch.siDo.eq(siDo).and(branch.branchName.eq(branchName)))
                 .fetchFirst();
+    }
+
+    @Override
+    public Branch findBranchByAdmin(String adminUsername) {
+        return queryFactory.select(admin.branch)
+                .from(admin)
+                .where(admin.username.eq(adminUsername))
+                .fetchOne();
     }
 }

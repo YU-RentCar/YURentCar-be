@@ -15,4 +15,5 @@ public interface CarRepositoryCustom {
 //    List<String> findRepairListByCarNumber(String carNumber);
     Boolean usableByCarNumberAndDate(String carNumber, LocalDateTime startTime, LocalDateTime endTime);
     List<CarResponseDto> findCarsByCarNumbers(String[] carNumber);
+    List<CarManagementDto> findCarsByAdmin(String adminUsername);
 }

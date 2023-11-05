@@ -312,4 +312,11 @@ public class CarService {
 
         return true;
     }
+
+    public List<CarManagementDto> getCarListByAdmin(String adminUsername) {
+        Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
+        lookupAdmin.orElseThrow(() -> new RuntimeException("없는 관리자입니다."));
+
+        return carRepository.findCarsByAdmin(adminUsername);
+    }
 }

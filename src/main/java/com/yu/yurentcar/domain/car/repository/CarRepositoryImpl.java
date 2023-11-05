@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.yu.yurentcar.domain.branch.repository.BranchRepository;
 import com.yu.yurentcar.domain.car.dto.*;
 import com.yu.yurentcar.domain.car.entity.QCarSpecification;
 import com.yu.yurentcar.global.SiDoType;
@@ -23,6 +24,7 @@ import static com.yu.yurentcar.domain.reservation.entity.QReservation.reservatio
 @RequiredArgsConstructor
 @Repository
 public class CarRepositoryImpl implements CarRepositoryCustom {
+    private final BranchRepository branchRepository;
     QCarSpecification carSpec = carSpecification;
 
     private final JPAQueryFactory queryFactory;
@@ -166,6 +168,15 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                 .select(Projections.constructor(CarResponseDto.class, car.carSpec.carName, car.carNumber, car.totalDistance))
                 .from(car)
                 .where(car.carNumber.in(carNumber))
+                .fetch();
+    }
+
+    @Override
+    public List<CarManagementDto> findCarsByAdmin(String adminUsername) {
+        return queryFactory
+                .select(Projections.constructor(CarManagementDto.class, car.carSpec.carName, car.carNumber, car.carState, car.carId))
+                .from(car)
+                .where(car.branch.eq(branchRepository.findBranchByAdmin(adminUsername)))
                 .fetch();
     }
 }
