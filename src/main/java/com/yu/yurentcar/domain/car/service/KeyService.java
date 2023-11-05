@@ -3,6 +3,7 @@ package com.yu.yurentcar.domain.car.service;
 import com.yu.yurentcar.domain.branch.entity.KeyStorage;
 import com.yu.yurentcar.domain.branch.repository.KeyStorageRepository;
 import com.yu.yurentcar.domain.car.dto.KeyDto;
+import com.yu.yurentcar.domain.car.dto.KeyManagementDto;
 import com.yu.yurentcar.domain.car.entity.Car;
 import com.yu.yurentcar.domain.car.entity.Key;
 import com.yu.yurentcar.domain.car.entity.KeyState;
@@ -15,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -78,5 +80,13 @@ public class KeyService {
         }
         keyRepository.delete(lookupKey.get());
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    public List<KeyManagementDto> getKeyListByAdmin(String adminUsername) {
+        Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
+        if (lookupAdmin.isEmpty()) throw new RuntimeException("없는 관리자입니다.");
+
+        return keyRepository.findKeysByAdmin(adminUsername);
     }
 }

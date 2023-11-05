@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface KeyRepository extends JpaRepository<Key, Long> {
+public interface KeyRepository extends JpaRepository<Key, Long>, KeyRepositoryCustom {
     Optional<Key> findByRfid(String rfid);
     Optional<Key> findByKeyStorage(KeyStorage keyStorage);
 }

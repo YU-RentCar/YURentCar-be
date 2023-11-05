@@ -79,4 +79,9 @@ public class CarController {
     public ResponseEntity<Boolean> deleteCar(@RequestParam String adminUsername, @RequestParam String carNumber) {
         return ResponseEntity.ok(carService.deleteCar(adminUsername, carNumber));
     }
+
+    @GetMapping("/management")
+    public ResponseEntity<List<CarManagementDto>> getCarListByAdmin(@RequestParam String adminUsername) {
+        return ResponseEntity.ok(carService.getCarListByAdmin(adminUsername));
+    }
 }

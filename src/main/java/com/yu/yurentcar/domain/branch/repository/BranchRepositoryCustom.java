@@ -10,4 +10,5 @@ public interface BranchRepositoryCustom {
     List<String> findBranchNameListBySiDo(SiDoType siDo);
     Point getGeoPointByBranchName(SiDoType siDo, String branchName);
     Branch findBranchBySiDoAndBranchName(SiDoType siDo, String branchName);
+    Branch findBranchByAdmin(String adminUsername);
 }
