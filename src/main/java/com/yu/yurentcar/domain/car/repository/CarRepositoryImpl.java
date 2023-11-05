@@ -4,8 +4,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.yu.yurentcar.domain.branch.dto.UpdatableCarResponseDto;
 import com.yu.yurentcar.domain.branch.repository.BranchRepository;
 import com.yu.yurentcar.domain.car.dto.*;
+import com.yu.yurentcar.domain.car.entity.Car;
 import com.yu.yurentcar.domain.car.entity.QCarSpecification;
 import com.yu.yurentcar.global.SiDoType;
 import lombok.RequiredArgsConstructor;
@@ -188,6 +190,32 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                 .select(Projections.constructor(CarManagementDto.class, car.carSpec.carName, car.carNumber, car.carState, car.carId))
                 .from(car)
                 .where(car.branch.eq(branchRepository.findBranchByAdmin(adminUsername)))
+                .fetch();
+    }
+
+    @Override
+    public List<UpdatableCarResponseDto> findUpdatableCarListByDateAndReservationId(LocalDateTime startDate, LocalDateTime endDate, Long reservationId) {
+        JPAQuery<Car> carPath = queryFactory.select(reservation.car)
+                .from(reservation)
+                .where(reservation.reservationId.ne(reservationId))
+                .where(getUsableDateFilter(startDate, endDate));
+
+        JPAQuery<Car> carListInBranchPath = queryFactory.selectFrom(car)
+                .where(car.branch.eq(
+                        queryFactory.select(car.branch)
+                                .from(reservation)
+                                .innerJoin(reservation.car, car)
+                                .where(reservation.reservationId.eq(reservationId))
+                ));
+        return queryFactory
+                .select(Projections.constructor(UpdatableCarResponseDto.class,
+                        carSpec.carName, car.carNumber))
+                .from(car)
+                .innerJoin(car.carSpec, carSpec)
+                .where(car.ne(carPath))
+                .where(car.in(
+                        carListInBranchPath
+                ))
                 .fetch();
     }
 }
