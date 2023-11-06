@@ -7,6 +7,8 @@ import com.yu.yurentcar.domain.car.dto.CarEventResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
 import com.yu.yurentcar.domain.car.entity.QCarSpecification;
+import com.yu.yurentcar.domain.reservation.dto.ReservationBranchDto;
+import com.yu.yurentcar.domain.reservation.dto.ReservationDatesDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationDetailDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationListResponseDto;
 import com.yu.yurentcar.domain.reservation.entity.Reservation;
@@ -168,5 +170,60 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                                 .where(user.username.eq(username)).fetchOne())
                         .and(reservation.endDate.gt(LocalDateTime.now())))
                 .limit(1);
+    }
+
+    @Override
+    public List<ReservationBranchDto> getReservationListByBranchId(Long branchId, Boolean isDone) {
+        JPAQuery<ReservationBranchDto> query = queryFactory
+                .select(Projections.constructor(ReservationBranchDto.class,
+                        reservation.user.nickname,
+                        reservation.reservationId,
+                        reservation.car.carNumber,
+                        reservation.startDate,
+                        reservation.endDate))
+                .from(reservation)
+                .where(reservation.car.branch.branchId.eq(branchId));
+        if (isDone != null) {
+            if(isDone)
+                query = query.where(reservation.endDate.before(LocalDateTime.now()));
+            else
+                query = query.where(reservation.endDate.after(LocalDateTime.now()));
+        }
+
+        return query.fetch();
+    }
+
+    @Override
+    public ReservationBranchDto getReservationListByBranchIdAndNickname(Long branchId, String nickname, Boolean isDone) {
+        JPAQuery<ReservationBranchDto> query = queryFactory
+                .select(Projections.constructor(ReservationBranchDto.class,
+                        reservation.user.nickname,
+                        reservation.reservationId,
+                        reservation.car.carNumber,
+                        reservation.startDate,
+                        reservation.endDate))
+                .from(reservation)
+                .where(reservation.user.nickname.eq(nickname))
+                .where(reservation.car.branch.branchId.eq(branchId));
+        if (isDone != null) {
+            if(isDone)
+                query = query.where(reservation.endDate.before(LocalDateTime.now()));
+            else
+                query = query.where(reservation.endDate.after(LocalDateTime.now()));
+        }
+
+        return query.limit(1).fetchFirst();
+    }
+
+    @Override
+    public ReservationDatesDto getReservationStartDateAndEndDateByReservationId(Long reservationId) {
+        return queryFactory
+                .select(Projections.constructor(ReservationDatesDto.class,
+                        reservation.startDate,
+                        reservation.endDate))
+                .from(reservation)
+                .where(reservation.reservationId.eq(reservationId))
+                .limit(1)
+                .fetchFirst();
     }
 }

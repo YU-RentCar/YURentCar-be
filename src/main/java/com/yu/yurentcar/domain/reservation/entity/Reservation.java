@@ -10,12 +10,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicUpdate
 @Table(name = "reservation")
 @ToString
 public class Reservation extends BaseTimeEntity {
@@ -56,4 +58,20 @@ public class Reservation extends BaseTimeEntity {
         this.endDate = endDate;
         this.reservationPrice = reservationPrice;
     }
+
+    public Reservation updateReservation(Car car, User user, LocalDateTime startDate, LocalDateTime endDate, Integer reservationPrice) {
+        if (car != null)
+            this.car = car;
+        if (user != null)
+            this.user = user;
+        if (startDate != null)
+            this.startDate = startDate;
+        if (endDate != null)
+            this.endDate = endDate;
+        if (reservationPrice != null)
+            this.reservationPrice = reservationPrice;
+
+        return this;
+    }
+
 }

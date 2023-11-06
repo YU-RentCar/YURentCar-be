@@ -3,6 +3,7 @@ package com.yu.yurentcar.domain.reservation.service;
 import com.yu.yurentcar.domain.car.dto.CarEventResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
+import com.yu.yurentcar.domain.car.entity.Car;
 import com.yu.yurentcar.domain.car.repository.CarRepository;
 import com.yu.yurentcar.domain.reservation.dto.*;
 import com.yu.yurentcar.domain.reservation.entity.*;
@@ -146,10 +147,21 @@ public class ReservationService {
         return reservation.getReservationId();
     }
 
-//    @Transactional
-//    public Boolean patchReservation(ReservationRequestDto requestDto, String adminUsername){
-//        return true;
-//    }
+    @Transactional
+    public Boolean patchReservation(Long reservationId, ReservationPatchRequestDto requestDto, String username) {
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new RuntimeException("해당 예약이 존재하지 않습니다."));
+        boolean isReservationInAdminBranch = adminRepository.isReservationByAdminBranch(reservationId, username);
+        if (!isReservationInAdminBranch)
+            throw new RuntimeException("해당 관리자가 없거나 해당 관리자 지점의 예약이 아닙니다.");
+        boolean usable = carRepository.updatableByCarNumberAndDate(reservationId, requestDto.getCarNumber(), requestDto.getStartDate(), requestDto.getEndDate());
+        if (!usable)
+            return false;
+
+        Car updatedCar = carRepository.findByCarNumber(requestDto.getCarNumber()).orElseThrow(() -> new RuntimeException("존재하지 않는 차량입니다."));
+        reservationRepository.save(reservation.updateReservation(updatedCar, null, requestDto.getStartDate(), requestDto.getEndDate(), null));
+
+        return true;
+    }
 
     @Transactional
     public Boolean deleteReservation(Long reservationId, String adminUsername, String username) {
@@ -161,7 +173,7 @@ public class ReservationService {
             if (lookupAdmin.isEmpty()) throw new RuntimeException("없는 관리자입니다.");
             lookupReservation = reservationRepository.findById(reservationId);
             if (lookupReservation.isEmpty()) throw new RuntimeException("없는 예약입니다");
-            if(!lookupReservation.get().getCar().getBranch().equals(lookupAdmin.get().getBranch())){
+            if (!lookupReservation.get().getCar().getBranch().equals(lookupAdmin.get().getBranch())) {
                 throw new RuntimeException("취소하려는 예약의 지점과 다른 지점 관리자입니다. 권한이 없습니다.");
             }
             lookupUser = Optional.of(lookupReservation.get().getUser());
@@ -191,5 +203,20 @@ public class ReservationService {
         reservationRepository.deleteById(reservationId);
 
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationBranchDto> getReservationListByBranch(Long branchId, Boolean isDone) {
+        return reservationRepository.getReservationListByBranchId(branchId, isDone);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationBranchDto getReservationListByBranchAndNickname(Long branchId, String nickname, Boolean isDone) {
+        return reservationRepository.getReservationListByBranchIdAndNickname(branchId, nickname, isDone);
+    }
+
+    @Transactional(readOnly = true)
+    public ReservationDatesDto getReservationStartEndTimes(Long reservationId) {
+        return reservationRepository.getReservationStartDateAndEndDateByReservationId(reservationId);
     }
 }

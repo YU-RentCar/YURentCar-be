@@ -31,4 +31,9 @@ public class AdminService {
     public Boolean validAdminByUsername(String username) {
         return adminRepository.existsByUsername(username);
     }
+
+    @Transactional(readOnly = true)
+    public Admin getAdminByUsername(String username) {
+        return adminRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("존재하지 않는 관리자입니다."));
+    }
 }

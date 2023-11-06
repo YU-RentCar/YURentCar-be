@@ -3,6 +3,8 @@ package com.yu.yurentcar.domain.reservation.repository;
 import com.yu.yurentcar.domain.car.dto.CarEventResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarResponseDto;
 import com.yu.yurentcar.domain.car.dto.CarSpecDto;
+import com.yu.yurentcar.domain.reservation.dto.ReservationBranchDto;
+import com.yu.yurentcar.domain.reservation.dto.ReservationDatesDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationDetailDto;
 import com.yu.yurentcar.domain.reservation.dto.ReservationListResponseDto;
 import com.yu.yurentcar.domain.reservation.entity.Reservation;
@@ -31,4 +33,9 @@ public interface ReservationRepositoryCustom {
     List<ReservationListResponseDto> getReservationListByUsername(String username);
 
     Reservation findRecentReservationsByCarId(Long carId);
+
+    List<ReservationBranchDto> getReservationListByBranchId(Long branchId, Boolean isDone);
+    ReservationBranchDto getReservationListByBranchIdAndNickname(Long branchId, String nickname, Boolean isDone);
+
+    ReservationDatesDto getReservationStartDateAndEndDateByReservationId(Long reservationId);
 }

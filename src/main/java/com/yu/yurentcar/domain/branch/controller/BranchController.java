@@ -1,5 +1,7 @@
 package com.yu.yurentcar.domain.branch.controller;
 
+import com.yu.yurentcar.domain.branch.dto.UpdatableCarListRequestParamsDto;
+import com.yu.yurentcar.domain.branch.dto.UpdatableCarResponseDto;
 import com.yu.yurentcar.domain.branch.service.BranchService;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
@@ -32,5 +34,11 @@ public class BranchController {
     @GetMapping("location")
     public ResponseEntity<Point> getBranchGeoPoint(@RequestParam @Valid String province, @RequestParam @Valid String branchName) {
         return ResponseEntity.ok(branchService.getGeoPoint(province, branchName));
+    }
+
+    @GetMapping("cars/updatable")
+    public ResponseEntity<List<UpdatableCarResponseDto>> getUpdatableCarListByBranch(@Valid UpdatableCarListRequestParamsDto requestParamsDto) {
+        List<UpdatableCarResponseDto> updatableCarResponseDtoList = branchService.getUpdatableCarListByBranch(requestParamsDto);
+        return ResponseEntity.ok(updatableCarResponseDtoList);
     }
 }
