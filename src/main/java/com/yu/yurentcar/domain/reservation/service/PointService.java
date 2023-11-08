@@ -33,7 +33,10 @@ public class PointService {
     private final PayRepository payRepository;
 
     @Transactional(readOnly = true)
-    public List<PointDetailsResponseDto> getPointList(String username) {
+    public List<PointDetailsResponseDto> getPointList(String username, String adminUsername) {
+        if (adminUsername != null) {
+            adminRepository.findByUsername(adminUsername).orElseThrow(() -> new RuntimeException("없는 사용자입니다."));
+        }
         return pointRepository.findAllPointByUsername(username);
     }
 
@@ -55,9 +58,9 @@ public class PointService {
     }
 
     @Transactional
-    public int getPoint(String adminUsername, String username) {
+    public int getPoint(String adminUsername, String nickname) {
         Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
-        Optional<User> lookupUser = userRepository.findByUsername(username);
+        Optional<User> lookupUser = userRepository.findByNickname(nickname);
         if (lookupAdmin.isEmpty()) throw new RuntimeException("없는 관리자입니다.");
         if (lookupUser.isEmpty()) throw new RuntimeException("없는 사용자입니다.");
 
