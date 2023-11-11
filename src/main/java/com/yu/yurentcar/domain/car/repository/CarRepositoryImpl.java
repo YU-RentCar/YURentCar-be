@@ -107,6 +107,7 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                         carSpec.oilType,
                         carSpec.transmission,
                         carSpec.maxPassenger,
+                        car.photoUrl,
                         carSpec.carBrand,
                         carSpec.isKorean
                 ))

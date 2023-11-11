@@ -68,11 +68,11 @@ public class CarController {
     }
 
     @PatchMapping
-    public ResponseEntity<Boolean> patchCar(@RequestPart(value = "carRequest") @Valid CarRequestDto carRequestDto,
+    public ResponseEntity<Boolean> patchCar(@RequestPart(value = "carRequest") @Valid CarPatchRequestDto carPatchRequestDto,
                                             @RequestParam String adminUsername,
                                             @RequestParam Long carId,
                                             @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
-        return ResponseEntity.ok(carService.patchCar(carRequestDto, adminUsername, carId, file));
+        return ResponseEntity.ok(carService.patchCar(carPatchRequestDto, adminUsername, carId, file));
     }
 
     @DeleteMapping

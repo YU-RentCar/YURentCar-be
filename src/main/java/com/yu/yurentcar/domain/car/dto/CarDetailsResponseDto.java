@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class CarDetailsResponseDto {
-    private final String imageUri;
+    private final String photoUrl;
     private final String carName;
     private final String carNumber;
     private final String carDescription;
@@ -31,7 +31,8 @@ public class CarDetailsResponseDto {
     private final String discountReason;
     private final String carBrand;
     private final Boolean isKorean;
-    public CarDetailsResponseDto(String carDescription, Integer totalDistance, LocalDateTime releaseDate, LocalDateTime createdAt, Integer carPrice, Integer discountRate, String discountReason, String carName, String carNumber, CarSize carSize, OilType oilType, Transmission transmission, Integer maxPassenger, CarBrand carBrand, Boolean isKorean) {
+
+    public CarDetailsResponseDto(String carDescription, Integer totalDistance, LocalDateTime releaseDate, LocalDateTime createdAt, Integer carPrice, Integer discountRate, String discountReason, String carName, String carNumber, CarSize carSize, OilType oilType, Transmission transmission, Integer maxPassenger, String photoUrl, CarBrand carBrand, Boolean isKorean) {
         this.carDescription = carDescription;
         this.totalDistance = totalDistance;
         this.releaseDate = releaseDate;
@@ -46,8 +47,8 @@ public class CarDetailsResponseDto {
         this.oilType = oilType.getDesc();
         this.transmission = transmission.getDesc();
         this.maxPassenger = maxPassenger;
-        this.imageUri = "http://";
-        this.carBrand= carBrand.getDesc();
+        this.photoUrl = photoUrl;
+        this.carBrand = carBrand.getDesc();
         this.isKorean = isKorean;
     }
 
