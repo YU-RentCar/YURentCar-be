@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.branch.controller;
 
+import com.yu.yurentcar.domain.branch.dto.BranchNameResponseDto;
 import com.yu.yurentcar.domain.branch.dto.KeyReturnDto;
 import com.yu.yurentcar.domain.branch.service.KioskService;
 import lombok.extern.log4j.Log4j2;
@@ -26,6 +27,12 @@ public class KioskController {
     @PostMapping("/return")
     public ResponseEntity<Long> returnKey(@RequestBody KeyReturnDto keyReturnDto) {
         log.info("returnKey = " + keyReturnDto.toString());
-        return ResponseEntity.status(HttpStatus.OK).body(kioskService.returnKey(keyReturnDto.getRfid(), keyReturnDto.getKioskId()));
+        return ResponseEntity.status(HttpStatus.OK).body(kioskService.returnKey(keyReturnDto.getKioskId()));
+    }
+
+    @GetMapping("/branch-name")
+    public ResponseEntity<BranchNameResponseDto> getBranchNameByKioskId(@RequestParam Long kioskId) {
+        log.info("getBranchNameByKioskId = " + kioskId.toString());
+        return ResponseEntity.status(HttpStatus.OK).body(kioskService.getBranchNameByKioskId(kioskId));
     }
 }

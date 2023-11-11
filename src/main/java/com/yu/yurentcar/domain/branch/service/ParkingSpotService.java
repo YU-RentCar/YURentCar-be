@@ -61,7 +61,7 @@ public class ParkingSpotService {
 
         for (ParkingSpotRequestDto parkingSpot : parkingSpotRequestList.getParkingSpotRequestList()) {
             // 주차한 차량이 있는 경우
-            if (parkingSpot.getType().equals("주차 불가능")) {
+            if (parkingSpot.getType().equals("주차 중")) {
                 Optional<Car> lookupCar = carRepository.findByCarNumber(parkingSpot.getCarNumber());
                 if (lookupCar.isEmpty()) throw new RuntimeException("없는 차량입니다.");
                 // 다른 지점의 차량인 경우
@@ -113,7 +113,7 @@ public class ParkingSpotService {
                 .orElseThrow(() -> new RuntimeException("없는 주차장입니다."));
         Key key = keyRepository.findByRfid(reportRfidDto.getRfid())
                 .orElseThrow(() -> new RuntimeException("없는 차 키입니다."));
-        parkingSpotRepository.save(parkingSpot.updateCar(key.getCar(),ParkingSpotType.PARKINGSPOT_CAR));
+        parkingSpotRepository.save(parkingSpot.updateCar(key.getCar(), ParkingSpotType.PARKINGSPOT_CAR));
         return true;
     }
 }

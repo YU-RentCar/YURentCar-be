@@ -179,7 +179,8 @@ public class CarService {
     }
 
     @Transactional
-    public Boolean patchCar(CarRequestDto carRequestDto, String adminUsername, Long carId, MultipartFile file) throws IOException {
+    public Boolean patchCar(CarPatchRequestDto carPatchRequestDto, String adminUsername, Long carId, MultipartFile file) throws IOException {
+        log.info(carPatchRequestDto.toString());
         Optional<Car> lookupCar = carRepository.findById(carId);
         if (lookupCar.isEmpty()) throw new RuntimeException("없는 차량입니다.");
         Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
@@ -191,11 +192,11 @@ public class CarService {
 
         //변경하려는 차량의 차량 제원이 있는지 검사
         Optional<CarSpecification> lookupCarSpec = carSpecificationRepository.findByCarBrandAndCarNameAndOilTypeAndReleaseDateAndTransmission(
-                EnumValueConvertUtils.ofDesc(CarBrand.class, carRequestDto.getCarBrand()),
-                carRequestDto.getCarName(),
-                EnumValueConvertUtils.ofDesc(OilType.class, carRequestDto.getOilType()),
-                carRequestDto.getReleaseDate(),
-                EnumValueConvertUtils.ofDesc(Transmission.class, carRequestDto.getTransmission()));
+                EnumValueConvertUtils.ofDesc(CarBrand.class, carPatchRequestDto.getCarBrand()),
+                carPatchRequestDto.getCarName(),
+                EnumValueConvertUtils.ofDesc(OilType.class, carPatchRequestDto.getOilType()),
+                carPatchRequestDto.getReleaseDate(),
+                EnumValueConvertUtils.ofDesc(Transmission.class, carPatchRequestDto.getTransmission()));
 
         CarSpecification carSpec;
 
@@ -203,35 +204,36 @@ public class CarService {
             //차량 제원이 없는 경우 등록
             carSpec = carSpecificationRepository.saveAndFlush(
                     CarSpecification.builder()
-                            .carName(carRequestDto.getCarName())
-                            .maxPassenger(carRequestDto.getMaxPassenger())
-                            .carSize(EnumValueConvertUtils.ofDesc(CarSize.class, carRequestDto.getCarSize()))
-                            .oilType(EnumValueConvertUtils.ofDesc(OilType.class, carRequestDto.getOilType()))
-                            .transmission(EnumValueConvertUtils.ofDesc(Transmission.class, carRequestDto.getTransmission()))
-                            .carBrand(EnumValueConvertUtils.ofDesc(CarBrand.class, carRequestDto.getCarBrand()))
-                            .releaseDate(carRequestDto.getReleaseDate())
+                            .carName(carPatchRequestDto.getCarName())
+                            .maxPassenger(carPatchRequestDto.getMaxPassenger())
+                            .carSize(EnumValueConvertUtils.ofDesc(CarSize.class, carPatchRequestDto.getCarSize()))
+                            .oilType(EnumValueConvertUtils.ofDesc(OilType.class, carPatchRequestDto.getOilType()))
+                            .transmission(EnumValueConvertUtils.ofDesc(Transmission.class, carPatchRequestDto.getTransmission()))
+                            .carBrand(EnumValueConvertUtils.ofDesc(CarBrand.class, carPatchRequestDto.getCarBrand()))
+                            .releaseDate(carPatchRequestDto.getReleaseDate())
                             .build()
 
             );
         } else carSpec = lookupCarSpec.get();
 
-        // 기존에 사진이 있는 경우 저장된 사진 삭제
-        File lookupFile;
-        if (!lookupCar.get().getPhotoUrl().equals("")) {
-            log.info("기존의 이미지를 지웁니다.");
-            log.info(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(lookupCar.get().getPhotoUrl()));
-            try {
-                lookupFile = new File(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(lookupCar.get().getPhotoUrl(), "UTF-8"));
-                lookupFile.delete();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
+        File lookupFile;
         String projectPath;
         String fileName = null;
-
-        if (file != null) {
+        // 사진이 변경된 경우
+        if (carPatchRequestDto.getIsModified()) {
+            log.info("사진이 변경되었습니다.");
+            // 기존의 사진이 있으면 지우기
+            if (!lookupCar.get().getPhotoUrl().equals("")) {
+                log.info("기존의 이미지를 지웁니다.");
+                log.info(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(lookupCar.get().getPhotoUrl()));
+                try {
+                    lookupFile = new File(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(lookupCar.get().getPhotoUrl(), "UTF-8"));
+                    lookupFile.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             //저장할 경로를 지정
             projectPath = System.getProperty("user.dir") + "\\files";
             //식별자
@@ -244,7 +246,7 @@ public class CarService {
 
         // 차량 변경
         Car car = carRepository.saveAndFlush(
-                lookupCar.get().updateCar(carRequestDto, carSpec, lookupBranch.get(), fileName)
+                lookupCar.get().updateCar(CarPatchRequestDto.toCarRequestDto(carPatchRequestDto), carSpec, lookupBranch.get(), fileName)
         );
 
         // 수리내역 삭제
@@ -253,25 +255,25 @@ public class CarService {
         carEventRepository.deleteAccidentListByCarId(car.getCarId());
         //수리내역 사고내역 저장
         List<CarEvent> carEvents = new ArrayList<>();
-        if (carRequestDto.getAccidentList() != null) {
-            for (int i = 0; i < carRequestDto.getAccidentList().size(); i++) {
+        if (carPatchRequestDto.getAccidentList() != null) {
+            for (int i = 0; i < carPatchRequestDto.getAccidentList().size(); i++) {
                 CarEvent carEvent = CarEvent.builder()
                         .car(car)
-                        .title(carRequestDto.getAccidentList().get(i).getTitle())
-                        .eventDate(carRequestDto.getAccidentList().get(i).getEventDate())
-                        .content(carRequestDto.getAccidentList().get(i).getContent())
+                        .title(carPatchRequestDto.getAccidentList().get(i).getTitle())
+                        .eventDate(carPatchRequestDto.getAccidentList().get(i).getEventDate())
+                        .content(carPatchRequestDto.getAccidentList().get(i).getContent())
                         .isRepair(false)
                         .build();
                 carEvents.add(carEvent);
             }
         }
-        if (carRequestDto.getRepairList() != null) {
-            for (int i = 0; i < carRequestDto.getRepairList().size(); i++) {
+        if (carPatchRequestDto.getRepairList() != null) {
+            for (int i = 0; i < carPatchRequestDto.getRepairList().size(); i++) {
                 CarEvent carEvent = CarEvent.builder()
                         .car(car)
-                        .title(carRequestDto.getRepairList().get(i).getTitle())
-                        .eventDate(carRequestDto.getRepairList().get(i).getEventDate())
-                        .content(carRequestDto.getRepairList().get(i).getContent())
+                        .title(carPatchRequestDto.getRepairList().get(i).getTitle())
+                        .eventDate(carPatchRequestDto.getRepairList().get(i).getEventDate())
+                        .content(carPatchRequestDto.getRepairList().get(i).getContent())
                         .isRepair(true)
                         .build();
                 carEvents.add(carEvent);
