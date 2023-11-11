@@ -313,10 +313,25 @@ public class CarService {
         return true;
     }
 
+    @Transactional(readOnly = true)
     public List<CarManagementDto> getCarListByAdmin(String adminUsername) {
         Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
         lookupAdmin.orElseThrow(() -> new RuntimeException("없는 관리자입니다."));
 
         return carRepository.findCarsByAdmin(adminUsername);
+    }
+
+    @Transactional
+    public Boolean changeCarState(CarStateRequestDto carStateRequestDto, String adminUsername) {
+        Admin admin = adminRepository.findByUsername(adminUsername)
+                .orElseThrow(() -> new RuntimeException("없는 관리자입니다."));
+        Car car = carRepository.findByCarId(carStateRequestDto.getCarId())
+                .orElseThrow(() -> new RuntimeException("없는 차량입니다."));
+        //삭제하려는 관리자와 차량의 지점이 같은지 확인
+        if (!admin.getBranch().equals(car.getBranch()))
+            throw new RuntimeException("다른 지점 관리자입니다. 권한이 없습니다.");
+        carRepository.save(car.updateCarState(carStateRequestDto.getCarState()));
+
+        return true;
     }
 }

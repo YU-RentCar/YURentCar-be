@@ -23,13 +23,14 @@ public class PointController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PointDetailsResponseDto>> getPointList(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth) {
-        return ResponseEntity.status(HttpStatus.OK).body(pointService.getPointList(auth.getUsername()));
+    public ResponseEntity<List<PointDetailsResponseDto>> getPointList(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth,
+                                                                      @RequestParam(required = false) String adminUsername) {
+        return ResponseEntity.status(HttpStatus.OK).body(pointService.getPointList(auth.getUsername(),adminUsername));
     }
 
     @GetMapping("/users")
-    public ResponseEntity<Integer> getPoint(@RequestParam String adminUsername, @RequestParam String username) {
-        return ResponseEntity.status(HttpStatus.OK).body(pointService.getPoint(adminUsername, username));
+    public ResponseEntity<Integer> getPoint(@RequestParam String adminUsername, @RequestParam String nickname) {
+        return ResponseEntity.status(HttpStatus.OK).body(pointService.getPoint(adminUsername, nickname));
     }
 
     @PostMapping("/users")

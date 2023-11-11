@@ -84,4 +84,9 @@ public class CarController {
     public ResponseEntity<List<CarManagementDto>> getCarListByAdmin(@RequestParam String adminUsername) {
         return ResponseEntity.ok(carService.getCarListByAdmin(adminUsername));
     }
+
+    @PostMapping("/states")
+    public ResponseEntity<Boolean> changeCarState(@RequestBody CarStateRequestDto carStateRequestDto, @RequestParam String adminUsername) {
+        return ResponseEntity.ok(carService.changeCarState(carStateRequestDto, adminUsername));
+    }
 }

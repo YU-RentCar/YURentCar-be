@@ -3,6 +3,7 @@ package com.yu.yurentcar.domain.car.entity;
 import com.yu.yurentcar.domain.branch.entity.Branch;
 import com.yu.yurentcar.domain.car.dto.CarRequestDto;
 import com.yu.yurentcar.global.BaseTimeEntity;
+import com.yu.yurentcar.global.utils.enums.EnumValueConvertUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -13,6 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -79,7 +82,7 @@ public class Car extends BaseTimeEntity {
 //    //에러 표기되지만 실제 동작에는 문제 없음
 //    @Column(name = "accident_list", columnDefinition = "text[]")
 //    private List<String> accidentList;
-    public Car updateCar(CarRequestDto carRequestDto, CarSpecification carSpecification, Branch branch,String photoUrl) {
+    public Car updateCar(CarRequestDto carRequestDto, CarSpecification carSpecification, Branch branch, String photoUrl) {
         if (carSpec != null)
             this.carSpec = carSpecification;
         if (branch != null)
@@ -98,6 +101,11 @@ public class Car extends BaseTimeEntity {
             this.carDescription = carRequestDto.getCarDescription();
         if (photoUrl != null)
             this.photoUrl = photoUrl;
+        return this;
+    }
+    public Car updateCarState(String carState){
+        if(carState != null)
+            this.carState = Objects.requireNonNull(EnumValueConvertUtils.ofDesc(CarState.class, carState));
         return this;
     }
 }

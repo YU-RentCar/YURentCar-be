@@ -2,6 +2,8 @@ package com.yu.yurentcar.domain.branch.controller;
 
 import com.yu.yurentcar.domain.branch.dto.ParkingSpotRequestList;
 import com.yu.yurentcar.domain.branch.dto.ParkingSpotResponseDto;
+import com.yu.yurentcar.domain.branch.dto.ReportParkingSpotDto;
+import com.yu.yurentcar.domain.branch.dto.ReportRfidDto;
 import com.yu.yurentcar.domain.branch.service.ParkingSpotService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.geo.Point;
@@ -36,5 +38,16 @@ public class ParkingSpotController {
         return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.findCarLocationByCarNumber(carNumber, province, branchName));
     }
 
+    //주차장 단순 들어갔다 나갔다 보고
+    @PostMapping("parking-status")
+    public  ResponseEntity<Boolean> reportParkingStatus(@RequestBody ReportParkingSpotDto reportParkingSpotDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.reportParkingStatus(reportParkingSpotDto));
+    }
+
+    // RFID 인식 여부 보고
+    @PostMapping("parking-status/rfid")
+    public  ResponseEntity<Boolean> reportRfid(@RequestBody ReportRfidDto reportRfidDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.reportRfid(reportRfidDto));
+    }
 }
 

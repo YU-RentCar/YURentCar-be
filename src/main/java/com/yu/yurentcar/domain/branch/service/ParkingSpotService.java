@@ -1,15 +1,15 @@
 package com.yu.yurentcar.domain.branch.service;
 
-import com.yu.yurentcar.domain.branch.dto.ParkingSpotRequestDto;
-import com.yu.yurentcar.domain.branch.dto.ParkingSpotRequestList;
-import com.yu.yurentcar.domain.branch.dto.ParkingSpotResponseDto;
+import com.yu.yurentcar.domain.branch.dto.*;
 import com.yu.yurentcar.domain.branch.entity.Branch;
 import com.yu.yurentcar.domain.branch.entity.ParkingSpot;
 import com.yu.yurentcar.domain.branch.entity.ParkingSpotType;
 import com.yu.yurentcar.domain.branch.repository.BranchRepository;
 import com.yu.yurentcar.domain.branch.repository.ParkingSpotRepository;
 import com.yu.yurentcar.domain.car.entity.Car;
+import com.yu.yurentcar.domain.car.entity.Key;
 import com.yu.yurentcar.domain.car.repository.CarRepository;
+import com.yu.yurentcar.domain.car.repository.KeyRepository;
 import com.yu.yurentcar.domain.user.entity.Admin;
 import com.yu.yurentcar.domain.user.repository.AdminRepository;
 import com.yu.yurentcar.global.SiDoType;
@@ -28,6 +28,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class ParkingSpotService {
+    private final KeyRepository keyRepository;
     private final CarRepository carRepository;
     private final BranchRepository branchRepository;
     private final AdminRepository adminRepository;
@@ -91,5 +92,28 @@ public class ParkingSpotService {
 
     public Point findCarLocationByCarNumber(String carNumber, String siDo, String branchName) {
         return parkingSpotRepository.findCarLocationByCarNumber(carNumber, EnumValueConvertUtils.ofDesc(SiDoType.class, siDo), branchName);
+    }
+
+    public Boolean reportParkingStatus(ReportParkingSpotDto reportParkingSpotDto) {
+        ParkingSpot parkingSpot = parkingSpotRepository.findById(reportParkingSpotDto.getParkingSpotId())
+                .orElseThrow((() -> new RuntimeException("없는 주차장 자리입니다.")));
+
+        // 상태값 업데이트
+        parkingSpotRepository.save(parkingSpot.updateState(reportParkingSpotDto.getIsParking() ? ParkingSpotType.PARKINGSPOT_CAR : ParkingSpotType.PARKINGSPOT_NO_CAR));
+        return true;
+    }
+
+    //주차봉 rfid 태그
+    public Boolean reportRfid(ReportRfidDto reportRfidDto) {
+        //rfid 내역 저장
+        if (!reportRfidDto.getIsRfidTagged())
+            log.info("rfid 미인식");
+
+        ParkingSpot parkingSpot = parkingSpotRepository.findById(reportRfidDto.getParkingSpotId())
+                .orElseThrow(() -> new RuntimeException("없는 주차장입니다."));
+        Key key = keyRepository.findByRfid(reportRfidDto.getRfid())
+                .orElseThrow(() -> new RuntimeException("없는 차 키입니다."));
+        parkingSpotRepository.save(parkingSpot.updateCar(key.getCar(),ParkingSpotType.PARKINGSPOT_CAR));
+        return true;
     }
 }

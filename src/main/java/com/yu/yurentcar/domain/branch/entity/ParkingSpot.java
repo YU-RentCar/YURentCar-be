@@ -8,12 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 @Table(name = "parking_spot")
 public class ParkingSpot extends BaseTimeEntity {
     @Id
@@ -30,7 +32,7 @@ public class ParkingSpot extends BaseTimeEntity {
     private Car car;
 
     @NotNull
-    @Column(name = "type",length = 30)
+    @Column(name = "type", length = 30)
     @Enumerated(EnumType.STRING)
     private ParkingSpotType type;
 
@@ -41,4 +43,18 @@ public class ParkingSpot extends BaseTimeEntity {
     @NotNull
     @Column
     private Double y;
+
+    public ParkingSpot updateState(ParkingSpotType parkingSpotType) {
+        if (parkingSpotType != null)
+            this.type = parkingSpotType;
+        return this;
+    }
+
+    public ParkingSpot updateCar(Car car, ParkingSpotType parkingSpotType) {
+        if (car != null)
+            this.car = car;
+        if (parkingSpotType != null)
+            this.type = parkingSpotType;
+        return this;
+    }
 }
