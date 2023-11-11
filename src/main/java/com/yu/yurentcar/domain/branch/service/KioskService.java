@@ -1,5 +1,6 @@
 package com.yu.yurentcar.domain.branch.service;
 
+import com.yu.yurentcar.domain.branch.dto.BranchNameResponseDto;
 import com.yu.yurentcar.domain.branch.entity.KeyStorage;
 import com.yu.yurentcar.domain.branch.entity.Kiosk;
 import com.yu.yurentcar.domain.branch.repository.KeyStorageRepository;
@@ -13,11 +14,19 @@ import com.yu.yurentcar.domain.reservation.entity.Reservation;
 import com.yu.yurentcar.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -75,54 +84,98 @@ public class KioskService {
         return keyStorage.getSlotNumber();
     }
 
+    // 사용자가 웹에서 키 반납 버튼을 눌렀을 경우
     @Transactional
-    public Long returnKey(String rfid, Long kioskId) {
-        // rfid로 차 키 조회
-        Optional<Key> lookupKey = keyRepository.findByRfid(rfid);
-        Key key = lookupKey.orElseThrow(() -> new RuntimeException("없는 차키입니다."));
-        // 차 키로 차량 조회
-        Optional<Car> lookupCar = carRepository.findById(key.getCar().getCarId());
-        Car car = lookupCar.orElseThrow(() -> new RuntimeException("없는 차량입니다."));
-
-        Optional<Kiosk> lookupKiosk = kioskRepository.findById(kioskId);
-        Kiosk kiosk = lookupKiosk.orElseThrow(() -> new RuntimeException("없는 키오스크입니다."));
-        // 지점이 소유한 차량인지 검증
-        if (!car.getBranch().equals(kiosk.getBranch())) {
-            throw new RuntimeException("이 지점이 소유한 차량이 아닙니다.");
-        }
-
-        // 차량의 최근 예약 조회
-        Reservation reservation = reservationRepository.findRecentReservationsByCarId(car.getCarId());
-        // 시간이 남아있는 경우
-        if (reservation.getEndDate().isAfter(LocalDateTime.now())) {
-            log.info("아직 예약 기간이 많이 남아있습니다.");
-        }
-        // 키 보관함의 남은 슬롯 중 1에 가까운 숫자에 저장
-        KeyStorage keyStorage = keyStorageRepository.findUsableSlotByKioskId(kioskId);
-        if (keyStorage == null) {
-            throw new RuntimeException("사용가능한 슬롯이 없습니다.");
-        }
-        /* // 파이썬 서버로 요청 보내는 로직
+    public Long returnKey(Long kioskId) {
+        Kiosk kiosk = kioskRepository.findById(kioskId)
+                .orElseThrow(() -> new RuntimeException("없는 키오스크입니다."));
+        // rfid 작동시키는 요청
         RestTemplate restTemplate = new RestTemplate();
         // 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         // 파라미터 세팅
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("slotNumber", keyStorage.getKeyStorageId().toString());
         map.add("kioskId", kioskId.toString());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
-        String url = "http://localhost:8080/keystorage";
+        String url = "http://192.168.1.45:8888/";
 
         ResponseEntity<Boolean> response = restTemplate.postForEntity(url, request, Boolean.class);
         if (!Boolean.TRUE.equals(response.getBody())) {
-            throw new RuntimeException("열리지 않았습니다. 다시 시도해주세요");
-        }*/
-        // 상태 업데이트
-        keyStorageRepository.save(keyStorage.updateAvailable(false));
-        keyRepository.save(key.updateKey(null, keyStorage, null, KeyState.WAITING));
-        return keyStorage.getSlotNumber();
+            throw new RuntimeException("응답이 정상적이지 않습니다. 다시 시도해주세요.");
+        }
+
+        // RFID가 켜지고 나서 보내는 요청
+        // 파이가 이 요청을 받으면 rfid 찍힐때까지 프리징
+        // 무한 프리징은 아니고 파이에서 10초정도 기다림
+        // 찍히면 rfid값을 응답
+        // 안 찍히면 빈 문자열 응답
+        // 헤더 설정
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // 파라미터 세팅
+        map = new LinkedMultiValueMap<>();
+        map.add("kioskId", kioskId.toString());
+
+        request = new HttpEntity<>(map, headers);
+
+        url = "http://192.168.1.45:8888/rfid-return";
+
+        ResponseEntity<String> response2 = restTemplate.postForEntity(url, request, String.class);
+        String rfid = response2.getBody();
+        if (rfid == null) {
+            throw new RuntimeException("응답이 정상적이지 않습니다. 다시 시도해주세요");
+        }
+        if (rfid.equals("")) {
+            throw new RuntimeException("RFID가 태그되지 않았습니다.");
+        }
+
+
+        // rfid로 차 키 조회
+        Key key = keyRepository.findByRfid(rfid)
+                .orElseThrow(() -> new RuntimeException("없는 차키입니다."));
+        // 차 키로 차량 조회
+        Car car = carRepository.findById(key.getCar().getCarId())
+                .orElseThrow(() -> new RuntimeException("없는 차량입니다."));
+        // 지점이 소유한 차량인지 검증
+        if (!car.getBranch().equals(kiosk.getBranch())) {
+            throw new RuntimeException("이 지점이 소유한 차량이 아닙니다.");
+        }
+        // 키 보관함의 남은 슬롯 중 1에 가까운 숫자에 저장
+        KeyStorage keyStorage = keyStorageRepository.findUsableSlotByKioskId(kioskId);
+        if (keyStorage == null) {
+            throw new RuntimeException("사용가능한 슬롯이 없습니다.");
+        }
+
+
+        // 파이에게 어떤 차 키 보관함을 열라는 요청
+        // 헤더 설정
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // 파라미터 세팅
+        map = new LinkedMultiValueMap<>();
+        map.add("slotNumber", keyStorage.getSlotNumber().toString());
+
+        request = new HttpEntity<>(map, headers);
+
+        url = "http://192.168.1.45:8888/receive-car-key";
+
+        ResponseEntity<Boolean> response3 = restTemplate.postForEntity(url, request, Boolean.class);
+        if (!Boolean.TRUE.equals(response3.getBody())) {
+            throw new RuntimeException("응답이 정상적이지 않습니다. 다시 시도해주세요.");
+        } else {
+            // 상태 업데이트
+            keyStorageRepository.save(keyStorage.updateAvailable(false));
+            keyRepository.save(key.updateKey(null, keyStorage, null, KeyState.WAITING));
+            return keyStorage.getSlotNumber();
+        }
+    }
+
+    public BranchNameResponseDto getBranchNameByKioskId(Long kioskId) {
+        kioskRepository.findById(kioskId)
+                .orElseThrow(() -> new RuntimeException("없는 키오스크입니다."));
+        return kioskRepository.findBranchNameByKioskId(kioskId);
     }
 }

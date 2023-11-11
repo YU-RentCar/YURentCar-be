@@ -8,6 +8,5 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class KeyReturnDto {
-    private String rfid;
     private Long kioskId;
 }
