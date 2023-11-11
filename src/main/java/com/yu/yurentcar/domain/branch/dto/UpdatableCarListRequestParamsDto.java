@@ -1,14 +1,12 @@
 package com.yu.yurentcar.domain.branch.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +16,9 @@ public class UpdatableCarListRequestParamsDto {
     @NotNull
     private Long reservationId;
     @NotNull
+    //@JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime startDate;
     @NotNull
+    //@JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime endDate;
 }
