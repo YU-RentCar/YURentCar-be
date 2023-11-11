@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.yu.yurentcar.domain.branch.entity.QParkingSpot.parkingSpot;
+import static com.yu.yurentcar.domain.car.entity.QCar.car;
 
 @Log4j2
 @Repository
@@ -32,8 +33,9 @@ public class ParkingSpotRepositoryImpl implements ParkingSpotRepositoryCustom {
     @Override
     public List<ParkingSpotResponseDto> getAllParkingSpotByBranchId(Long branchId) {
         return queryFactory
-                .select(Projections.constructor(ParkingSpotResponseDto.class, parkingSpot.type, parkingSpot.x, parkingSpot.y))
+                .select(Projections.constructor(ParkingSpotResponseDto.class, parkingSpot.type, parkingSpot.x, parkingSpot.y, car.carNumber))
                 .from(parkingSpot)
+                .leftJoin(car).on(parkingSpot.car.eq(car))
                 .where(parkingSpot.branch.branchId.eq(branchId))
                 .fetch();
     }
