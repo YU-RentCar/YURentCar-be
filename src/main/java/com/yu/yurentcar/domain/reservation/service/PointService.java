@@ -33,11 +33,11 @@ public class PointService {
     private final PayRepository payRepository;
 
     @Transactional(readOnly = true)
-    public List<PointDetailsResponseDto> getPointList(String username, String adminUsername) {
+    public List<PointDetailsResponseDto> getPointList(String nickname, String adminUsername) {
         if (adminUsername != null) {
             adminRepository.findByUsername(adminUsername).orElseThrow(() -> new RuntimeException("없는 사용자입니다."));
         }
-        return pointRepository.findAllPointByUsername(username);
+        return pointRepository.findAllPointByNickname(nickname);
     }
 
     @Transactional

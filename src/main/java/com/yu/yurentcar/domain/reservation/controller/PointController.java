@@ -24,8 +24,12 @@ public class PointController {
 
     @GetMapping
     public ResponseEntity<List<PointDetailsResponseDto>> getPointList(@CurrentSecurityContext(expression = "authentication.principal") UserAuthDto auth,
-                                                                      @RequestParam(required = false) String adminUsername) {
-        return ResponseEntity.status(HttpStatus.OK).body(pointService.getPointList(auth.getUsername(),adminUsername));
+                                                                      @RequestParam(required = false) String adminUsername, @RequestParam(required = false) String nickname) {
+        boolean isLogin = auth != null;
+        if(isLogin)
+            return ResponseEntity.status(HttpStatus.OK).body(pointService.getPointList(auth.getNickname(),adminUsername));
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(pointService.getPointList(nickname,adminUsername));
     }
 
     @GetMapping("/users")
