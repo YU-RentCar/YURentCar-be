@@ -13,7 +13,7 @@ public class PointRequestDto {
     private Integer price;
     private String reason;
     private String type;
-    private String username;
+    private String nickname;
     private Long reviewId;
     private Long payId;
 }
