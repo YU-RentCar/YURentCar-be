@@ -42,7 +42,8 @@ public class KioskService {
     @Value("${my.pi.base-url}")
     private String piBaseUrl;
 
-    @Transactional(readOnly = true)
+
+    @Transactional
     public Long findKeyStorage(String name, Long reservationId, Long kioskId) {
         // reservationId으로 예약 건 조회 후 name이 같은지 확인
         Optional<Reservation> lookupReservation = reservationRepository.findById(reservationId);
@@ -58,7 +59,7 @@ public class KioskService {
             throw new RuntimeException("차 키가 존재하지 않습니다. 관리자에게 문의하세요");
         }
 
-       /* // 파이썬 서버로 요청 보내는 로직
+        // 파이썬 서버로 요청 보내는 로직
         RestTemplate restTemplate = new RestTemplate();
         // 헤더 설정
         HttpHeaders headers = new HttpHeaders();
@@ -68,15 +69,16 @@ public class KioskService {
         // 파라미터 세팅
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("kioskId", kioskId.toString());
-        map.add("slotNumber", keyStorage.getKeyStorageId().toString());
+        map.add("slotNumber", keyStorage.getSlotNumber().toString());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-        String url = "http://localhost:8080/api/v1/test/keyStorage";
 
-        Boolean response = restTemplate.postForObject(url, request, Boolean.class);
+        log.info("파이 주소 = " + piBaseUrl + "/receive-car-key");
+        Boolean response = restTemplate.postForObject(piBaseUrl + "/receive-car-key", request, Boolean.class);
+
         if (Boolean.FALSE.equals(response)) {
             throw new RuntimeException("열리지 않았습니다. 다시 시도해주세요");
-        }*/
+        }
 
         // 보관함 사용 가능으로 변환
         keyStorageRepository.save(keyStorage.updateAvailable(true));
@@ -156,6 +158,7 @@ public class KioskService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         // 파라미터 세팅
         map = new LinkedMultiValueMap<>();
+        map.add("kioskId", keyStorage.getKiosk().getKioskId().toString());
         map.add("slotNumber", keyStorage.getSlotNumber().toString());
 
         request = new HttpEntity<>(map, headers);
