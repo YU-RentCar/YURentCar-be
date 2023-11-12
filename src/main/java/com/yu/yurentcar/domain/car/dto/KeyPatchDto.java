@@ -7,10 +7,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class KeyDto {
+public class KeyPatchDto {
     private String carNumber;
     private Long kioskId;
     private Long slotNumber;
     private String rfid;
     private String state;
+    private Long keyId;
 }

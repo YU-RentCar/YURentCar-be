@@ -24,7 +24,13 @@ public class KeyRepositoryImpl implements KeyRepositoryCustom {
     @Override
     public List<KeyManagementDto> findKeysByAdmin(String adminUsername) {
         return queryFactory
-                .select(Projections.constructor(KeyManagementDto.class, key.car.carSpec.carName, key.car.carNumber, key.rfid, key.state, key.keyId))
+                .select(Projections.constructor(KeyManagementDto.class,
+                        key.car.carNumber,
+                        key.rfid,
+                        key.state,
+                        key.keyId,
+                        key.keyStorage.kiosk.kioskId,
+                        key.keyStorage.slotNumber))
                 .from(key)
                 .where(key.car.carId.in(queryFactory
                         .select(car.carId)

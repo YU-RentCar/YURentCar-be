@@ -9,17 +9,19 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class KeyManagementDto {
-    private String carName;
     private String carNumber;
     private String rfid;
     private String keyState;
     private Long keyId;
+    private Long kioskId;
+    private Long slotNumber;
 
-    public KeyManagementDto(String carName, String carNumber, String rfid, KeyState keyState, Long keyId) {
-        this.carName = carName;
+    public KeyManagementDto(String carNumber, String rfid, KeyState keyState, Long keyId, Long kioskId, Long slotNumber) {
         this.carNumber = carNumber;
         this.rfid = rfid;
         this.keyState = keyState.getDesc();
         this.keyId = keyId;
+        this.kioskId = kioskId;
+        this.slotNumber = slotNumber;
     }
 }
