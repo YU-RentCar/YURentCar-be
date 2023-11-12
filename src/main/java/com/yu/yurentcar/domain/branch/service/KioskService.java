@@ -14,6 +14,7 @@ import com.yu.yurentcar.domain.reservation.entity.Reservation;
 import com.yu.yurentcar.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -37,6 +38,9 @@ public class KioskService {
     private final CarRepository carRepository;
     private final KeyRepository keyRepository;
     private final ReservationRepository reservationRepository;
+
+    @Value("${my.pi.base-url}")
+    private String piBaseUrl;
 
     @Transactional(readOnly = true)
     public Long findKeyStorage(String name, Long reservationId, Long kioskId) {
@@ -100,9 +104,7 @@ public class KioskService {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
-        String url = "http://192.168.1.45:8888/";
-
-        ResponseEntity<Boolean> response = restTemplate.postForEntity(url, request, Boolean.class);
+        ResponseEntity<Boolean> response = restTemplate.postForEntity(piBaseUrl, request, Boolean.class);
         if (!Boolean.TRUE.equals(response.getBody())) {
             throw new RuntimeException("응답이 정상적이지 않습니다. 다시 시도해주세요.");
         }
@@ -121,9 +123,7 @@ public class KioskService {
 
         request = new HttpEntity<>(map, headers);
 
-        url = "http://192.168.1.45:8888/rfid-return";
-
-        ResponseEntity<String> response2 = restTemplate.postForEntity(url, request, String.class);
+        ResponseEntity<String> response2 = restTemplate.postForEntity(piBaseUrl + "/rfid-return", request, String.class);
         String rfid = response2.getBody();
         if (rfid == null) {
             throw new RuntimeException("응답이 정상적이지 않습니다. 다시 시도해주세요");
@@ -160,9 +160,7 @@ public class KioskService {
 
         request = new HttpEntity<>(map, headers);
 
-        url = "http://192.168.1.45:8888/receive-car-key";
-
-        ResponseEntity<Boolean> response3 = restTemplate.postForEntity(url, request, Boolean.class);
+        ResponseEntity<Boolean> response3 = restTemplate.postForEntity(piBaseUrl + "/receive-car-key", request, Boolean.class);
         if (!Boolean.TRUE.equals(response3.getBody())) {
             throw new RuntimeException("응답이 정상적이지 않습니다. 다시 시도해주세요.");
         } else {
