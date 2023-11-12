@@ -16,7 +16,7 @@ public class AdminRepositoryImpl implements AdminRepositoryCustom {
 
     @Override
     public Boolean isReservationByAdminBranch(Long reservationId, String adminUsername) {
-        return queryFactory
+        return !queryFactory
                 .selectFrom(reservation)
                 .where(reservation.reservationId.eq(reservationId))
                 .where(reservation.car.branch.eq(

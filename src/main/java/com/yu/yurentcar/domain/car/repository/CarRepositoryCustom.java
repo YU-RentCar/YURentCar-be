@@ -1,6 +1,5 @@
 package com.yu.yurentcar.domain.car.repository;
 
-import com.yu.yurentcar.domain.branch.dto.UpdatableCarResponseDto;
 import com.yu.yurentcar.domain.car.dto.*;
 
 import java.time.LocalDateTime;
@@ -25,6 +24,4 @@ public interface CarRepositoryCustom {
     List<CarResponseDto> findCarsByCarNumbers(String[] carNumber);
 
     List<CarManagementDto> findCarsByAdmin(String adminUsername);
-
-    List<UpdatableCarResponseDto> findUpdatableCarListByDateAndReservationId(LocalDateTime startDate, LocalDateTime endDate, Long reservationId);
 }
