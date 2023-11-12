@@ -4,6 +4,7 @@ import com.yu.yurentcar.domain.branch.entity.KeyStorage;
 import com.yu.yurentcar.domain.branch.repository.KeyStorageRepository;
 import com.yu.yurentcar.domain.car.dto.KeyDto;
 import com.yu.yurentcar.domain.car.dto.KeyManagementDto;
+import com.yu.yurentcar.domain.car.dto.KeyPatchDto;
 import com.yu.yurentcar.domain.car.entity.Car;
 import com.yu.yurentcar.domain.car.entity.Key;
 import com.yu.yurentcar.domain.car.entity.KeyState;
@@ -30,20 +31,20 @@ public class KeyService {
 
     @Transactional
     public Long postKey(String adminUsername, KeyDto keyDto) {
-        Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
-        if (lookupAdmin.isEmpty()) throw new RuntimeException("없는 관리자입니다.");
-        Optional<Car> lookupCar = carRepository.findByCarNumber(keyDto.getCarNumber());
-        if (lookupCar.isEmpty()) throw new RuntimeException("없는 차량입니다.");
-        Optional<KeyStorage> lookupKeyStorage = keyStorageRepository.findById(keyDto.getKeyStorageId());
-        if (lookupKeyStorage.isEmpty()) throw new RuntimeException("없는 차키 보관함입니다.");
+        Admin admin = adminRepository.findByUsername(adminUsername)
+                .orElseThrow(() -> new RuntimeException("없는 관리자입니다."));
+        Car car = carRepository.findByCarNumber(keyDto.getCarNumber())
+                .orElseThrow(() -> new RuntimeException("없는 차량입니다."));
+        KeyStorage keyStorage = keyStorageRepository.findBySlotNumberAndKiosk_KioskId(keyDto.getSlotNumber(), keyDto.getKioskId())
+                .orElseThrow(() -> new RuntimeException("없는 차키 보관함입니다."));
         //차량의 지점 정보와 관리자 지점 정보가 같은지 검증
-        if (!lookupAdmin.get().getBranch().equals(lookupCar.get().getBranch())) {
+        if (!admin.getBranch().equals(car.getBranch())) {
             throw new RuntimeException("다른 지점 관리자입니다. 권한이 없습니다.");
         }
         Key key = keyRepository.save(
                 Key.builder()
-                        .car(lookupCar.get())
-                        .keyStorage(lookupKeyStorage.get())
+                        .car(car)
+                        .keyStorage(keyStorage)
                         .rfid(keyDto.getRfid())
                         .keyState(Enum.valueOf(KeyState.class, keyDto.getState()))
                         .build()
@@ -52,19 +53,20 @@ public class KeyService {
     }
 
     @Transactional
-    public Boolean patchKey(String adminUsername, KeyDto keyDto, Long keyId) {
-        Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
-        if (lookupAdmin.isEmpty()) throw new RuntimeException("없는 관리자입니다.");
-        Optional<Car> lookupCar = carRepository.findByCarNumber(keyDto.getCarNumber());
-        if (lookupCar.isEmpty()) throw new RuntimeException("없는 차량입니다.");
-        Optional<KeyStorage> lookupKeyStorage = keyStorageRepository.findById(keyDto.getKeyStorageId());
-        if (lookupKeyStorage.isEmpty()) throw new RuntimeException("없는 차키 보관함입니다.");
-        if (!lookupAdmin.get().getBranch().equals(lookupCar.get().getBranch())) {
+    public Boolean patchKey(String adminUsername, KeyPatchDto keyPatchDto) {
+        Admin admin = adminRepository.findByUsername(adminUsername)
+                .orElseThrow(() -> new RuntimeException("없는 관리자입니다."));
+        Car car = carRepository.findByCarNumber(keyPatchDto.getCarNumber())
+                .orElseThrow(() -> new RuntimeException("없는 차량입니다."));
+        KeyStorage keyStorage = keyStorageRepository.findBySlotNumberAndKiosk_KioskId(keyPatchDto.getSlotNumber(), keyPatchDto.getKioskId())
+                .orElseThrow(() -> new RuntimeException("없는 차키 보관함입니다."));
+        if (!admin.getBranch().equals(car.getBranch())) {
             throw new RuntimeException("다른 지점 관리자입니다. 권한이 없습니다.");
         }
-        Optional<Key> lookupKey = keyRepository.findById(keyId);
-        keyRepository.save(lookupKey.orElseThrow(() -> new RuntimeException("없는 차키입니다."))
-                .updateKey(lookupCar.get(), lookupKeyStorage.get(), keyDto.getRfid(), Enum.valueOf(KeyState.class, keyDto.getState())));
+        Key key = keyRepository.findById(keyPatchDto.getKeyId())
+                .orElseThrow(() -> new RuntimeException("없는 차키입니다."));
+        keyRepository.save(key
+                .updateKey(car, keyStorage, keyPatchDto.getRfid(), Enum.valueOf(KeyState.class, keyPatchDto.getState())));
         return true;
     }
 

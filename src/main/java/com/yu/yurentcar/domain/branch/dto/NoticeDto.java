@@ -14,5 +14,4 @@ public class NoticeDto {
     private LocalDateTime startDate;
     private LocalDateTime finishDate;
     private String description;
-    private String photoUrl;
 }

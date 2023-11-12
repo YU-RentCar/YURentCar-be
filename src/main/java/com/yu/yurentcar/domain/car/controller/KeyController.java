@@ -2,6 +2,7 @@ package com.yu.yurentcar.domain.car.controller;
 
 import com.yu.yurentcar.domain.car.dto.KeyDto;
 import com.yu.yurentcar.domain.car.dto.KeyManagementDto;
+import com.yu.yurentcar.domain.car.dto.KeyPatchDto;
 import com.yu.yurentcar.domain.car.service.KeyService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,9 @@ public class KeyController {
     }
 
     @PatchMapping
-    public ResponseEntity<Boolean> patchKey(@RequestBody KeyDto keyDto, @RequestParam String adminUsername, @RequestParam Long keyId) {
-        log.info("patchKey = " + keyDto);
-        return ResponseEntity.status(HttpStatus.OK).body(keyService.patchKey(adminUsername, keyDto, keyId));
+    public ResponseEntity<Boolean> patchKey(@RequestBody KeyPatchDto keyPatchDto, @RequestParam String adminUsername) {
+        log.info("patchKey = " + keyPatchDto);
+        return ResponseEntity.status(HttpStatus.OK).body(keyService.patchKey(adminUsername, keyPatchDto));
     }
 
     @DeleteMapping
