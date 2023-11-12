@@ -46,7 +46,7 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
             query.where(carSpec.oilType.in(requestDto.getOilTypes()));
         if (!requestDto.getTransmissions().isEmpty())
             query.where(carSpec.transmission.in(requestDto.getTransmissions()));
-        return query.where(carSpec.maxPassenger.gt(requestDto.getMinCount()))
+        return query.where(carSpec.maxPassenger.goe(requestDto.getMinCount()))
                 .where(car.branch.siDo.eq(requestDto.getSiDo())
                         .and(car.branch.branchName.eq(requestDto.getBranchName())
                                 .and(car.carId.notIn(isCarUsable(requestDto.getSiDo(), requestDto.getBranchName(), requestDto.getStartDate(), requestDto.getEndDate())))))
