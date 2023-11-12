@@ -64,15 +64,15 @@ public class Notice extends BaseTimeEntity {
         this.finishDate = finishDate;
     }
 
-    public Notice updateNotice(NoticeDto noticeDto, Admin admin){
+    public Notice updateNotice(NoticeDto noticeDto, Admin admin, String fileName) {
         this.title = noticeDto.getTitle();
-        if(startDate != null)
+        if (startDate != null)
             this.startDate = noticeDto.getStartDate();
-        if(finishDate != null)
+        if (finishDate != null)
             this.finishDate = noticeDto.getFinishDate();
         this.description = noticeDto.getDescription();
-        if(photoUrl != null)
-            this.photoUrl = noticeDto.getPhotoUrl();
+        if (photoUrl != null)
+            this.photoUrl = fileName;
         this.admin = admin;
         return this;
     }
