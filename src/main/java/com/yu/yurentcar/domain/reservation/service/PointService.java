@@ -70,7 +70,7 @@ public class PointService {
     @Transactional
     public Long postPoint(String adminUsername, PointRequestDto pointRequestDto) {
         Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminUsername);
-        Optional<User> lookupUser = userRepository.findByUsername(pointRequestDto.getUsername());
+        Optional<User> lookupUser = userRepository.findByNickname(pointRequestDto.getNickname());
         if (lookupAdmin.isEmpty()) throw new RuntimeException("없는 관리자입니다.");
         if (lookupUser.isEmpty()) throw new RuntimeException("없는 사용자입니다.");
 
