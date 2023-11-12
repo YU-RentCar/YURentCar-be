@@ -32,10 +32,8 @@ public class NoticeRepositoryImpl implements NoticeRepositoryCustom {
         JPAQuery<NoticeSummaryDto> query = queryFactory
                 .select(Projections.constructor(NoticeSummaryDto.class, notice.noticeId, notice.photoUrl, notice.title, notice.description, notice.startDate, notice.finishDate, notice.modifiedAt))
                 .from(notice)
-                .where(notice.branch.eq(queryFactory
-                                .selectFrom(branch)
-                                .where(branch.branchName.eq(branchName).and(branch.siDo.eq(siDo))))
-                        .and(notice.finishDate.gt(LocalDateTime.now()).or(notice.finishDate.isNull())))
+                .where(notice.branch.branchName.eq(branchName))
+                .where(notice.branch.siDo.eq(siDo))
                 .orderBy(notice.modifiedAt.desc());
         if(count != 0)
             query = query.limit(count);
