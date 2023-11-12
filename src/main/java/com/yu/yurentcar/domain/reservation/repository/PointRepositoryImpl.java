@@ -19,7 +19,7 @@ public class PointRepositoryImpl implements PointRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<PointDetailsResponseDto> findAllPointByUsername(String username) {
+    public List<PointDetailsResponseDto> findAllPointByNickname(String nickname) {
         return queryFactory
                 .select(Projections.constructor(PointDetailsResponseDto.class,
                         point.price,
@@ -27,7 +27,7 @@ public class PointRepositoryImpl implements PointRepositoryCustom {
                         point.createdAt))
                 .from(point)
                 .innerJoin(point.userId, QUser.user)
-                .where(QUser.user.username.eq(username))
+                .where(QUser.user.nickname.eq(nickname))
                 .orderBy(point.createdAt.desc()).fetch();
     }
 
