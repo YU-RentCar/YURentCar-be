@@ -1,6 +1,7 @@
 package com.yu.yurentcar.security.config;
 
 import com.yu.yurentcar.domain.user.repository.UserRepository;
+import com.yu.yurentcar.domain.user.service.CustomAdminDetailsService;
 import com.yu.yurentcar.domain.user.service.CustomOAuth2UserService;
 import com.yu.yurentcar.domain.user.service.CustomUserDetailsService;
 import com.yu.yurentcar.global.utils.CookieProvider;
@@ -46,6 +47,7 @@ public class SecurityConfig {
 
     private final TokenRedisService tokenRedisService;
     private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAdminDetailsService customAdminDetailsService;
 
     private final TokenProvider tokenProvider;
     private final CookieProvider cookieProvider;
@@ -81,7 +83,7 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterBefore(new JwtFilter(tokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(tokenProvider, customUserDetailsService, customAdminDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/api/v1/**").permitAll()
@@ -140,7 +142,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         //configuration.setAllowedOrigins(Collections.singletonList("http://42.82.185.184:3000")); // singletonList : 하나짜리 리스트
-        configuration.setAllowedOrigins(Arrays.asList(webBaseUrl, "http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(webBaseUrl, "http://localhost:3000", "http://localhost:3001"));
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setExposedHeaders(Arrays.asList("X-Page-Count", "Access-Control-Allow-Origin","Access-Control-Allow-Credentials"));
