@@ -1,5 +1,6 @@
 package com.yu.yurentcar.security.filter;
 
+import com.yu.yurentcar.domain.user.service.CustomAdminDetailsService;
 import com.yu.yurentcar.domain.user.service.CustomUserDetailsService;
 import com.yu.yurentcar.global.utils.TokenProvider;
 import jakarta.servlet.FilterChain;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAdminDetailsService customAdminDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -39,8 +42,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(((User)authentication.getPrincipal()).getUsername());
+            UserDetails userDetails = null;
+            User user = (User)authentication.getPrincipal();
+            System.out.println("authorities: " + user.getAuthorities());
+            if(user.getAuthorities().contains(new SimpleGrantedAuthority("USER_ROLE")))
+                userDetails = customUserDetailsService.loadUserByUsername(user.getUsername());
+            else
+                userDetails = customAdminDetailsService.loadUserByUsername(user.getUsername());
             Authentication newAuth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            System.out.println("details: " + newAuth);
             SecurityContextHolder.getContext().setAuthentication(newAuth);
         }
 

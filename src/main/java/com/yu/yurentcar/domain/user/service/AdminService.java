@@ -4,27 +4,30 @@ import com.yu.yurentcar.domain.user.dto.AdminLoginDto;
 import com.yu.yurentcar.domain.user.entity.Admin;
 import com.yu.yurentcar.domain.user.repository.AdminRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Log4j2
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminService(AdminRepository adminRepository) {
+    public AdminService(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
         this.adminRepository = adminRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
-    public Boolean loginAdmin(AdminLoginDto adminLoginDto) {
-        Optional<Admin> lookupAdmin = adminRepository.findByUsername(adminLoginDto.getUsername());
-        if (lookupAdmin.isEmpty()) throw new RuntimeException("존재하지 않는 아이디입니다.");
-        if (!lookupAdmin.get().getPassword().equals(adminLoginDto.getPassword()))
+    public Admin loginAdmin(AdminLoginDto adminLoginDto) {
+        Admin lookupAdmin = adminRepository.findByUsername(adminLoginDto.getUsername())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다."));
+
+        if (!passwordEncoder.matches(adminLoginDto.getPassword(), lookupAdmin.getPassword()))
             throw new RuntimeException("입력하신 패스워드가 틀렸습니다.");
-        return true;
+
+        return lookupAdmin;
     }
 
     @Transactional(readOnly = true)

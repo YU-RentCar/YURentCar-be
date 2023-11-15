@@ -34,7 +34,7 @@ public class Admin extends BaseTimeEntity {
     @Column(length = 64)
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "branch_id")
     private Branch branch;
 
