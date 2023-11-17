@@ -100,14 +100,14 @@ public class NoticeService {
 
         File lookupFile;
         String projectPath;
-        String fileName = "";
+        String fileName = null;
         // 사진이 변경된 경우
         if (noticePatchDto.getIsModified()) {
             log.info("사진이 변경되었습니다.");
             // 기존의 사진이 있으면 지우기
             if (!notice.getPhotoUrl().equals("")) {
                 log.info("기존의 이미지를 지웁니다.");
-                log.info(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(notice.getPhotoUrl()));
+                log.info(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(notice.getPhotoUrl(), "UTF-8"));
                 try {
                     lookupFile = new File(System.getProperty("user.dir") + "\\files\\" + URLDecoder.decode(notice.getPhotoUrl(), "UTF-8"));
                     lookupFile.delete();

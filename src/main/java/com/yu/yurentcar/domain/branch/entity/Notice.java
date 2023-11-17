@@ -71,7 +71,7 @@ public class Notice extends BaseTimeEntity {
         if (finishDate != null)
             this.finishDate = noticeDto.getFinishDate();
         this.description = noticeDto.getDescription();
-        if (photoUrl != null)
+        if (fileName != null)
             this.photoUrl = fileName;
         this.admin = admin;
         return this;
