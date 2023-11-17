@@ -46,7 +46,12 @@ public class ParkingSpot extends BaseTimeEntity {
 
     public ParkingSpot updateState(ParkingSpotType parkingSpotType) {
         if (parkingSpotType != null)
+        {
+            if(parkingSpotType == ParkingSpotType.PARKINGSPOT_NO_CAR){
+                this.car = null;
+            }
             this.type = parkingSpotType;
+        }
         return this;
     }
 

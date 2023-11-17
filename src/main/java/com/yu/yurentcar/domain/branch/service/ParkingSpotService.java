@@ -90,10 +90,11 @@ public class ParkingSpotService {
         return true;
     }
 
+    @Transactional
     public Point findCarLocationByCarNumber(String carNumber, String siDo, String branchName) {
         return parkingSpotRepository.findCarLocationByCarNumber(carNumber, EnumValueConvertUtils.ofDesc(SiDoType.class, siDo), branchName);
     }
-
+    @Transactional
     public Boolean reportParkingStatus(ReportParkingSpotDto reportParkingSpotDto) {
         ParkingSpot parkingSpot = parkingSpotRepository.findById(reportParkingSpotDto.getParkingSpotId())
                 .orElseThrow((() -> new RuntimeException("없는 주차장 자리입니다.")));
@@ -102,13 +103,13 @@ public class ParkingSpotService {
         parkingSpotRepository.save(parkingSpot.updateState(reportParkingSpotDto.getIsParking() ? ParkingSpotType.PARKINGSPOT_CAR : ParkingSpotType.PARKINGSPOT_NO_CAR));
         return true;
     }
-
     //주차봉 rfid 태그
+    @Transactional
     public Boolean reportRfid(ReportRfidDto reportRfidDto) {
-        //rfid 내역 저장
-        if (!reportRfidDto.getIsRfidTagged())
+        if (!reportRfidDto.getIsRfidTagged()) {
             log.info("rfid 미인식");
-
+            return true;
+        }
         ParkingSpot parkingSpot = parkingSpotRepository.findById(reportRfidDto.getParkingSpotId())
                 .orElseThrow(() -> new RuntimeException("없는 주차장입니다."));
         Key key = keyRepository.findByRfid(reportRfidDto.getRfid())
