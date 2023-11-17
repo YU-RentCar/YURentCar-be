@@ -40,6 +40,18 @@ public class SecurityConfig {
     @Value("${my.web.base-url}")
     private String webBaseUrl;
 
+    @Value("${my.admin.base-url}")
+    private String adminBaseUrl;
+
+    @Value("${my.pi.base-url}")
+    private String piBaseUrl;
+
+    @Value("${my.pi2.base-url}")
+    private String pi2BaseUrl;
+
+    @Value("${my.kiosk.base-url}")
+    private String kioskBaseUrl;
+
     @Value("${my.web.domain}")
     private String DOMAIN;
 
@@ -87,7 +99,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/api/v1/**").permitAll()
-                        .anyRequest().denyAll());
+                .anyRequest().denyAll());
 
 
         //로컬 로그인
@@ -142,10 +154,10 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         //configuration.setAllowedOrigins(Collections.singletonList("http://42.82.185.184:3000")); // singletonList : 하나짜리 리스트
-        configuration.setAllowedOrigins(Arrays.asList(webBaseUrl, "http://localhost:3000", "http://localhost:3001"));
+        configuration.setAllowedOrigins(Arrays.asList(webBaseUrl, adminBaseUrl, piBaseUrl, pi2BaseUrl, kioskBaseUrl, "http://localhost:3000", "http://yurentcar.kro.kr:9876", "http://192.68.1.13:8000", "http://192.168.1.63", "http://192.168.1.1"));
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
-        configuration.setExposedHeaders(Arrays.asList("X-Page-Count", "Access-Control-Allow-Origin","Access-Control-Allow-Credentials"));
+        configuration.setExposedHeaders(Arrays.asList("X-Page-Count", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
