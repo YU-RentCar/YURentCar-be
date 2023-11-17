@@ -154,7 +154,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         //configuration.setAllowedOrigins(Collections.singletonList("http://42.82.185.184:3000")); // singletonList : 하나짜리 리스트
-        configuration.setAllowedOrigins(Arrays.asList(webBaseUrl, adminBaseUrl, piBaseUrl, pi2BaseUrl, kioskBaseUrl, "http://localhost:3000", "http://yurentcar.kro.kr:9876", "http://192.68.1.13:8000", "http://192.168.1.63", "http://192.168.1.1"));
+        configuration.setAllowedOrigins(Arrays.asList(webBaseUrl, adminBaseUrl, piBaseUrl, pi2BaseUrl, kioskBaseUrl));
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setExposedHeaders(Arrays.asList("X-Page-Count", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
