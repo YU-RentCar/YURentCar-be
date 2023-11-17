@@ -36,7 +36,8 @@ public class CarRepositoryImpl implements CarRepositoryCustom {
                         car.carNumber,
                         car.totalDistance,
                         car.carPrice,
-                        car.discountRate
+                        car.discountRate,
+                        car.photoUrl
                 ))
                 .from(car)
                 .innerJoin(car.carSpec, carSpec);

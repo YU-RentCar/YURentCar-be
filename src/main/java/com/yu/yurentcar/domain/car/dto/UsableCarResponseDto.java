@@ -12,15 +12,15 @@ public class UsableCarResponseDto {
     private Integer beforePrice;
     private Integer afterPrice;
     private Integer discountRatio;
-    private String imageUri;
+    private String photoUrl;
 
-    public UsableCarResponseDto(String carName, String carNumber, Integer totalDistance, Integer beforePrice, Integer discountRatio) {
+    public UsableCarResponseDto(String carName, String carNumber, Integer totalDistance, Integer beforePrice, Integer discountRatio, String photoUrl) {
         this.carName = carName;
         this.carNumber = carNumber;
         this.totalDistance = totalDistance;
         this.beforePrice = beforePrice;
         this.afterPrice = (int) Math.ceil((beforePrice - (beforePrice * discountRatio * 0.01)));
         this.discountRatio = discountRatio;
-        this.imageUri = "http://";
+        this.photoUrl = photoUrl;
     }
 }

@@ -1,6 +1,9 @@
 package com.yu.yurentcar.domain.reservation.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,16 +19,18 @@ public class ReservationDetailDto {
     private String carNumber;
     private List<String> drivers;
     private String photoUrl;
+    private Long reservationId;
 
     @Builder
-    public ReservationDetailDto(LocalDateTime startDate, LocalDateTime endDate, String branchName, String carName, String carNumber) {
+    public ReservationDetailDto(LocalDateTime startDate, LocalDateTime endDate, String branchName, String carName, String carNumber, String photoUrl, Long reservationId) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.branchName = branchName;
         this.carName = carName;
         this.carNumber = carNumber;
         this.drivers = null;
-        this.photoUrl = "http://";
+        this.photoUrl = photoUrl;
+        this.reservationId = reservationId;
     }
 
     public ReservationDetailDto updateDrivers(List<String> drivers) {
