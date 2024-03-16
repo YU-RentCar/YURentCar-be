@@ -107,7 +107,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .username(username)
                 .name(name)
                 .password(passwordEncoder.encode("1111"))
-                .nickname("hi")
+                .nickname(name)
                 .gender(gender)
                 .birthday(birthday)
                 .phoneNumber(phoneNumber)

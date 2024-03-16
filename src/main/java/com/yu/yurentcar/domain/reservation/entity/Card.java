@@ -6,9 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
@@ -16,8 +14,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "card")
+@ToString
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +45,13 @@ public class Card {
     @PastOrPresent // 현재 또는 현재 이전
     @Column(name = "register_date")
     private LocalDateTime registerDate;
+
+    @Builder
+    public Card(@NotNull User user, @NotNull String cardNumber, @NotNull String CVC, @NotNull LocalDateTime expiredDate, @NotNull LocalDateTime registerDate) {
+        this.user = user;
+        this.cardNumber = cardNumber;
+        this.CVC = CVC;
+        this.expiredDate = expiredDate;
+        this.registerDate = registerDate;
+    }
 }

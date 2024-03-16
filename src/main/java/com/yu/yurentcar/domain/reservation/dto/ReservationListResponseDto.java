@@ -26,7 +26,7 @@ public class ReservationListResponseDto {
     private String photoUrl;
 
 
-    public ReservationListResponseDto(Long reservationId, String carName, String carNumber, Integer totalDistance, LocalDateTime startDate, LocalDateTime endDate, String branchName, Integer price, Boolean isWritten) {
+    public ReservationListResponseDto(Long reservationId, String carName, String carNumber, Integer totalDistance, LocalDateTime startDate, LocalDateTime endDate, String branchName, Integer price, Boolean isWritten, String photoUrl) {
         this.reservationId = reservationId;
         this.carName = carName;
         this.carNumber = carNumber;
@@ -48,6 +48,6 @@ public class ReservationListResponseDto {
         else
             this.reviewType = ReviewType.IMPOSSIBLE.getDbValue();
 
-        this.photoUrl="http://";
+        this.photoUrl = photoUrl;
     }
 }

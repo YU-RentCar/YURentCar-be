@@ -112,7 +112,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     @Override
     public ReservationDetailDto findNowReservationDetailByUsername(String username) {
         return queryFactory
-                .select(Projections.constructor(ReservationDetailDto.class, reservation.startDate, reservation.endDate, branch.branchName, carSpecification.carName, car.carNumber))
+                .select(Projections.constructor(ReservationDetailDto.class, reservation.startDate, reservation.endDate, branch.branchName, carSpecification.carName, car.carNumber, car.photoUrl, reservation.reservationId))
                 .from(reservation)
                 .innerJoin(reservation.car, car)
                 .innerJoin(car.carSpec, carSpecification)
@@ -142,7 +142,8 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         reservation.endDate,
                         branch.branchName,
                         reservation.reservationPrice,
-                        review.reviewId.isNotNull()))
+                        review.reviewId.isNotNull(),
+                        car.photoUrl))
                 .from(reservation)
                 .leftJoin(review).on(reservation.eq(review.reservation))
                 .innerJoin(reservation.car.branch, branch)
@@ -184,7 +185,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .from(reservation)
                 .where(reservation.car.branch.branchId.eq(branchId));
         if (isDone != null) {
-            if(isDone)
+            if (isDone)
                 query = query.where(reservation.endDate.before(LocalDateTime.now()));
             else
                 query = query.where(reservation.endDate.after(LocalDateTime.now()));
@@ -206,7 +207,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .where(reservation.user.nickname.eq(nickname))
                 .where(reservation.car.branch.branchId.eq(branchId));
         if (isDone != null) {
-            if(isDone)
+            if (isDone)
                 query = query.where(reservation.endDate.before(LocalDateTime.now()));
             else
                 query = query.where(reservation.endDate.after(LocalDateTime.now()));

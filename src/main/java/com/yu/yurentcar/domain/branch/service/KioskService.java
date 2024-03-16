@@ -126,6 +126,8 @@ public class KioskService {
         request = new HttpEntity<>(map, headers);
 
         ResponseEntity<String> response2 = restTemplate.postForEntity(piBaseUrl + "/rfid-return", request, String.class);
+        System.out.println("response2: ");
+        System.out.println(response2);
         String rfid = response2.getBody();
         if (rfid == null) {
             throw new RuntimeException("응답이 정상적이지 않습니다. 다시 시도해주세요");
@@ -134,7 +136,9 @@ public class KioskService {
             throw new RuntimeException("RFID가 태그되지 않았습니다.");
         }
 
+        rfid = rfid.replaceAll("\"", "");
 
+        log.info("받은 rfid : "+ rfid);
         // rfid로 차 키 조회
         Key key = keyRepository.findByRfid(rfid)
                 .orElseThrow(() -> new RuntimeException("없는 차키입니다."));
@@ -163,7 +167,7 @@ public class KioskService {
 
         request = new HttpEntity<>(map, headers);
 
-        ResponseEntity<Boolean> response3 = restTemplate.postForEntity(piBaseUrl + "/receive-car-key", request, Boolean.class);
+        ResponseEntity<Boolean> response3 = restTemplate.postForEntity(piBaseUrl + "/return-car-key", request, Boolean.class);
         if (!Boolean.TRUE.equals(response3.getBody())) {
             throw new RuntimeException("응답이 정상적이지 않습니다. 다시 시도해주세요.");
         } else {
